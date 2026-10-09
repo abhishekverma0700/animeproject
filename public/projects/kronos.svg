@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <radialGradient id="bgGrad" cx="70%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#141414" />
+      <stop offset="100%" stop-color="#070707" />
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#bgGrad)" />
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  <circle cx="850" cy="350" r="400" fill="url(#glow)" />
+
+  <!-- App Window Frame -->
+  <g transform="translate(60, 60)">
+    <!-- Browser/UI Header -->
+    <rect width="1080" height="680" rx="16" fill="#0d0d0d" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" />
+    <rect width="1080" height="56" rx="16" fill="#141414" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+    
+    <!-- Dots -->
+    <circle cx="32" cy="28" r="6" fill="#ef4444" opacity="0.8" />
+    <circle cx="52" cy="28" r="6" fill="#f59e0b" opacity="0.8" />
+    <circle cx="72" cy="28" r="6" fill="#10b981" opacity="0.8" />
+
+    <!-- URL Bar -->
+    <rect x="120" y="14" width="480" height="28" rx="6" fill="#1f1f1f" stroke="rgba(255,255,255,0.06)" />
+    <text x="140" y="32" fill="#737373" font-family="monospace" font-size="12">https://kronos.internal.architecture/v2/metrics</text>
+
+    <!-- Badge -->
+    <rect x="900" y="14" width="150" height="28" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" />
+    <text x="975" y="32" fill="#10b981" font-family="monospace" font-size="10" text-anchor="middle" font-weight="bold">DISTRIBUTED // TELEMETRY</text>
+
+    <!-- Body Content -->
+    <!-- Hero Title in UI -->
+    <text x="48" y="130" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="36" letter-spacing="2">KRONOS CLOUD</text>
+    <text x="48" y="165" fill="#a3a3a3" font-family="sans-serif" font-size="16">High-Throughput Financial Event Broker</text>
+
+    <!-- Metrics Cards -->
+    <g transform="translate(48, 205)">
+      
+        <g transform="translate(0, 0)">
+          <rect width="312" height="110" rx="12" fill="#171717" stroke="rgba(255,255,255,0.08)" />
+          <text x="24" y="42" fill="#737373" font-family="monospace" font-size="11" letter-spacing="1.5">THROUGHPUT</text>
+          <text x="24" y="85" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="28">120K OPS/SEC</text>
+          <circle cx="280" cy="35" r="4" fill="#10b981" />
+        </g>
+      
+        <g transform="translate(336, 0)">
+          <rect width="312" height="110" rx="12" fill="#171717" stroke="rgba(255,255,255,0.08)" />
+          <text x="24" y="42" fill="#737373" font-family="monospace" font-size="11" letter-spacing="1.5">CLUSTER NODES</text>
+          <text x="24" y="85" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="28">64 REGIONS</text>
+          <circle cx="280" cy="35" r="4" fill="#10b981" />
+        </g>
+      
+        <g transform="translate(672, 0)">
+          <rect width="312" height="110" rx="12" fill="#171717" stroke="rgba(255,255,255,0.08)" />
+          <text x="24" y="42" fill="#737373" font-family="monospace" font-size="11" letter-spacing="1.5">AVAILABILITY</text>
+          <text x="24" y="85" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="28">99.999%</text>
+          <circle cx="280" cy="35" r="4" fill="#10b981" />
+        </g>
+      
+    </g>
+
+    <!-- Graph / Chart Visual -->
+    <g transform="translate(48, 345)">
+      <rect width="984" height="285" rx="12" fill="#121212" stroke="rgba(255,255,255,0.06)" />
+      
+      <!-- Grid lines -->
+      <line x1="40" y1="60" x2="944" y2="60" stroke="rgba(255,255,255,0.05)" />
+      <line x1="40" y1="120" x2="944" y2="120" stroke="rgba(255,255,255,0.05)" />
+      <line x1="40" y1="180" x2="944" y2="180" stroke="rgba(255,255,255,0.05)" />
+      <line x1="40" y1="240" x2="944" y2="240" stroke="rgba(255,255,255,0.05)" />
+
+      <!-- Synthetic wave/bar paths -->
+      <path d="M 60 210 Q 180 80 300 160 T 540 100 T 780 180 T 920 60" fill="none" stroke="#10b981" stroke-width="3" />
+      <path d="M 60 210 Q 180 80 300 160 T 540 100 T 780 180 T 920 60 L 920 260 L 60 260 Z" fill="#10b981" opacity="0.08" />
+      
+      <!-- Nodes on wave -->
+      <circle cx="300" cy="160" r="5" fill="#ffffff" stroke="#10b981" stroke-width="2" />
+      <circle cx="540" cy="100" r="5" fill="#ffffff" stroke="#10b981" stroke-width="2" />
+      <circle cx="780" cy="180" r="5" fill="#ffffff" stroke="#10b981" stroke-width="2" />
+      <circle cx="920" cy="60" r="6" fill="#10b981" />
+    </g>
+  </g>
+</svg>

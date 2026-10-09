@@ -3,25 +3,50 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background-color: #0a0a0a;
+  color: #ffffff;
+  scroll-behavior: initial;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  background-color: #0a0a0a;
+  overflow-x: hidden;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+::selection {
+  background-color: #ffffff;
+  color: #0a0a0a;
+}
+
+/* Subtle Film Grain Overlay */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Photo Edge Fade CSS Mask - fading all 4 edges to transparent */
+.hero-image-mask {
+  -webkit-mask-image:
+    radial-gradient(ellipse 75% 80% at 50% 50%, #000000 35%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000000 12%, #000000 85%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000000 12%, #000000 85%, transparent 100%);
+  mask-image:
+    radial-gradient(ellipse 75% 80% at 50% 50%, #000000 35%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000000 12%, #000000 85%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000000 12%, #000000 85%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
