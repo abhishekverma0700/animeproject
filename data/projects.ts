@@ -9,6 +9,9 @@ export interface Project {
   index: string;
   title: string;
   description: string;
+  summary: string;
+  logo?: string;
+  visual: "injuryconnect" | "synapse" | "kronos" | "voxmetric";
   tags: string[];
   image: string;
   video?: string;
@@ -26,6 +29,10 @@ export const PROJECTS: Project[] = [
     title: "INJURYCONNECT",
     description:
       "Attorney communication & clinical intelligence platform orchestrating legal caseloads, medical record intake, and automated litigation triage.",
+    summary:
+      "Connects personal injury law firms directly with medical clinics to eliminate paperwork delays. Automates clinical record intake, extracts injury severity with OCR, and lets attorneys message clients in real time.",
+    logo: "/projects/norbu-logo.svg",
+    visual: "injuryconnect",
     tags: ["NestJS", "Next.js", "Postgres", "AWS"],
     image: "/projects/injuryconnect.svg",
     video: "/projects/injuryconnect.mp4",
@@ -53,6 +60,9 @@ export const PROJECTS: Project[] = [
     title: "SYNAPSE AI",
     description:
       "Autonomous multi-agent research and reasoning pipeline integrating vector similarity lookups, RAG ingestion, and real-time streaming.",
+    summary:
+      "An autonomous swarm of specialized AI agents that collaborates on complex market and technical research. Coordinates multi-hop vector search, synthesizes findings, and streams verified answers in milliseconds.",
+    visual: "synapse",
     tags: ["Python", "FastAPI", "Pinecone", "LangChain"],
     image: "/projects/synapse.svg",
     link: "https://synapse.example.com",
@@ -79,6 +89,9 @@ export const PROJECTS: Project[] = [
     title: "KRONOS CLOUD",
     description:
       "Ultra-low latency financial telemetry engine handling 120k events/sec with distributed event queues and partition-tolerant caches.",
+    summary:
+      "A real-time financial telemetry platform processing over 120,000 transactions per second. Replaces batch ETL jobs with instant Kafka streaming queues, fault-tolerant Redis caching, and automated drift recovery.",
+    visual: "kronos",
     tags: ["Go", "Kafka", "Redis", "Terraform"],
     image: "/projects/kronos.svg",
     link: "https://kronos.example.com",
@@ -105,6 +118,9 @@ export const PROJECTS: Project[] = [
     title: "VOX METRIC",
     description:
       "Full-stack observability suite providing continuous runtime tracing, automated query anomaly detection, and synthetic health probes.",
+    summary:
+      "Full-stack observability suite that monitors distributed services, tracks API bottlenecks, and detects performance anomalies before outages happen. Analyzes billions of traces with sub-second queries.",
+    visual: "voxmetric",
     tags: ["TypeScript", "ClickHouse", "GraphQL", "Docker"],
     image: "/projects/voxmetric.svg",
     link: "https://voxmetric.example.com",

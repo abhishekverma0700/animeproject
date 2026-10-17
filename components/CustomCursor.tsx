@@ -38,12 +38,28 @@ export default function CustomCursor() {
       xTo(e.clientX);
       yTo(e.clientY);
 
-      // Check if hovering project with data-cursor="view"
+      // Check if hovering project with data-cursor="view" or card with data-cursor="flip"
       const target = e.target as HTMLElement | null;
       if (target) {
         const viewTarget = target.closest('[data-cursor="view"]');
         if (viewTarget) {
           setCursorText("VIEW");
+          setIsHovered(true);
+          return;
+        }
+
+        const interactiveChild = target.closest('a, button, [role="button"], input, textarea, select');
+        const flipTarget = target.closest('[data-cursor="flip"]');
+
+        if (flipTarget && !interactiveChild) {
+          setCursorText("FLIP");
+          setIsHovered(true);
+          return;
+        }
+
+        const emailTarget = target.closest('[data-cursor="email"]');
+        if (emailTarget && !interactiveChild) {
+          setCursorText("EMAIL");
           setIsHovered(true);
           return;
         }
@@ -72,7 +88,7 @@ export default function CustomCursor() {
 
   if (!isMounted) return null;
 
-  const isView = cursorText === "VIEW";
+  const hasBadgeText = Boolean(cursorText);
 
   return (
     <div
@@ -87,9 +103,9 @@ export default function CustomCursor() {
       <div
         className="rounded-full bg-white transition-all duration-300 ease-out flex items-center justify-center overflow-hidden"
         style={{
-          width: isView ? "72px" : isHovered ? "52px" : "10px",
-          height: isView ? "72px" : isHovered ? "52px" : "10px",
-          transform: isView
+          width: hasBadgeText ? "72px" : isHovered ? "52px" : "10px",
+          height: hasBadgeText ? "72px" : isHovered ? "52px" : "10px",
+          transform: hasBadgeText
             ? "translate(-31px, -31px)"
             : isHovered
             ? "translate(-21px, -21px)"
@@ -97,9 +113,9 @@ export default function CustomCursor() {
           opacity: 1,
         }}
       >
-        {isView && (
+        {cursorText && (
           <span className="font-mono text-[10px] font-bold tracking-widest text-black uppercase select-none animate-in fade-in duration-200">
-            VIEW
+            {cursorText}
           </span>
         )}
       </div>

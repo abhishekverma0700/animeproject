@@ -8,6 +8,7 @@ const MENU_ITEMS = [
   { label: "WORK", href: "#work", desc: "SELECTED CLIENT & OPEN-SOURCE CASE STUDIES" },
   { label: "ABOUT", href: "#about", desc: "BACKGROUND, METHODOLOGY & TIMELINE" },
   { label: "SKILLS", href: "#skills", desc: "FULL-STACK, CLOUD & AI TECH STACK" },
+  { label: "CERTIFICATIONS", href: "#certifications", desc: "VERIFIED CREDENTIALS & SPECIALIZATIONS" },
   { label: "CONTACT", href: "#contact", desc: "START A PROJECT OR SAY HELLO" },
 ];
 
