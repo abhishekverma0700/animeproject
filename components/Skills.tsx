@@ -428,7 +428,7 @@ export default function Skills() {
         aria-hidden="true"
       >
         {hoveredSkill && (
-          <div className="bg-[#121212]/95 border border-white/20 text-white font-mono text-[11px] px-3.5 py-2 rounded shadow-2xl backdrop-blur-md flex items-center gap-2.5 max-w-xs">
+          <div className="glass text-white font-mono text-[11px] px-4 py-2.5 !rounded-xl shadow-2xl flex items-center gap-2.5 max-w-xs">
             <span
               className="w-2 h-2 rounded-full shrink-0 shadow-sm"
               style={{

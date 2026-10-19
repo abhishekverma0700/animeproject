@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Preloader from "./Preloader";
 import Marquee from "./Marquee";
+import { CONTACT_DATA } from "@/data/contact";
 
 const HeroScene = dynamic(() => import("./HeroScene"), {
   ssr: false,
@@ -128,6 +129,7 @@ export default function Hero() {
   const heroContentRef = useRef<HTMLDivElement>(null);
   const photoWrapperRef = useRef<HTMLDivElement>(null);
   const photoImageRef = useRef<HTMLDivElement>(null);
+  const infoStripRef = useRef<HTMLDivElement>(null);
 
   // References for scrubbed states
   const line1Refs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -178,6 +180,12 @@ export default function Hero() {
       introTlRef.current = introTl;
 
       introTl
+        .fromTo(
+          infoStripRef.current,
+          { opacity: 0, y: -8 },
+          { opacity: 1, y: 0, duration: 0.9 },
+          0.1
+        )
         .fromTo(
           photoImageRef.current,
           { opacity: 0, scale: 1.12 },
@@ -332,7 +340,7 @@ export default function Hero() {
 
       // Smooth unpin transition into next section (fade & scale hero content)
       scrubTl.to(
-        [heroContentRef.current, photoWrapperRef.current],
+        [heroContentRef.current, photoWrapperRef.current, infoStripRef.current],
         {
           opacity: 0.25,
           scale: 0.95,
@@ -404,6 +412,24 @@ export default function Hero() {
           <div className="w-[1px] h-full bg-white/20 hidden md:block" />
           <div className="w-[1px] h-full bg-white/20 hidden lg:block" />
           <div className="w-[1px] h-full bg-white/20" />
+        </div>
+
+        {/* Hero Info Strip */}
+        <div
+          ref={infoStripRef}
+          className="relative z-20 w-full max-w-[1920px] mx-auto flex flex-wrap items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-white/10 font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-neutral-400 select-none pointer-events-auto"
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span className="text-white/90 font-medium tracking-[0.2em]">
+              {CONTACT_DATA.heroLocation}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 font-mono text-neutral-400">
+            <span className="text-neutral-500 hidden sm:inline">{"COORDINATES //"}</span>
+            <span className="text-white/80">{CONTACT_DATA.coordinates}</span>
+          </div>
         </div>
 
         {/* Main Content Area: Left Stacked States Typography */}

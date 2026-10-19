@@ -112,7 +112,7 @@ export default function VoxMetricVisual({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       data-cursor="view"
-      className="relative w-full max-w-[450px] xl:max-w-[490px] aspect-[4/3] rounded-2xl bg-[#0d0d0d] border border-white/10 overflow-hidden cursor-pointer group shadow-2xl transition-all select-none"
+      className="glass relative w-full max-w-[450px] xl:max-w-[490px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group shadow-2xl transition-all select-none"
       style={{
         boxShadow: isHovered
           ? `0 20px 60px -15px ${project.accent}35, 0 0 40px -10px ${project.accent}20`

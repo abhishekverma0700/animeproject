@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { CONTACT_DATA } from "@/data/contact";
 
 // Simple in-memory rate limiting map: ip -> timestamps[]
 const rateLimitMap = new Map<string, number[]>();
@@ -75,7 +76,7 @@ export async function POST(req: NextRequest) {
     const cleanMessage = message.trim().slice(0, 3000);
 
     const apiKey = process.env.RESEND_API_KEY;
-    const recipientEmail = process.env.CONTACT_RECEIVER_EMAIL || "contact@abhishek.dev";
+    const recipientEmail = process.env.CONTACT_RECEIVER_EMAIL || CONTACT_DATA.email;
 
     // 4. Send via Resend if API key is present
     if (apiKey) {

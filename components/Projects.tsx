@@ -3,90 +3,49 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { PROJECTS, Project } from "@/data/projects";
+import { INITIAL_PROJECTS, LiveProject } from "@/data/projects";
 import { useSmoothScroll } from "./SmoothScroll";
 import CaseStudyModal from "./CaseStudyModal";
-import {
-  InjuryConnectVisual,
-  SynapseVisual,
-  KronosVisual,
-  VoxMetricVisual,
-} from "./project-visuals";
+import GlassMockBrowser from "./GlassMockBrowser";
 
-// Visual component dispatcher based on project.visual key
-function ProjectVisualItem({
-  project,
-  onOpenModal,
-}: {
-  project: Project;
-  onOpenModal: (p: Project) => void;
-}) {
-  switch (project.visual) {
-    case "injuryconnect":
-      return <InjuryConnectVisual project={project} onOpenModal={onOpenModal} />;
-    case "synapse":
-      return <SynapseVisual project={project} onOpenModal={onOpenModal} />;
-    case "kronos":
-      return <KronosVisual project={project} onOpenModal={onOpenModal} />;
-    case "voxmetric":
-      return <VoxMetricVisual project={project} onOpenModal={onOpenModal} />;
-    default:
-      return <InjuryConnectVisual project={project} onOpenModal={onOpenModal} />;
+function formatDeployedTime(dateStr?: string): string {
+  if (!dateStr) return "recently";
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  if (isNaN(diffMs) || diffMs < 0) return "recently";
+
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHours = Math.floor(diffMin / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffWeeks = Math.floor(diffDays / 7);
+  const diffMonths = Math.floor(diffDays / 30);
+
+  if (diffHours < 1) {
+    return `${Math.max(1, diffMin)}m ago`;
   }
-}
-
-// Magnetic "OPEN CASE STUDY" button with rotating arrow
-function MagneticCaseStudyButton({
-  onClick,
-}: {
-  onClick: () => void;
-}) {
-  const btnRef = useRef<HTMLButtonElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const btn = btnRef.current;
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) * 0.35;
-    const y = (e.clientY - rect.top - rect.height / 2) * 0.35;
-    gsap.to(btn, { x, y, duration: 0.25, ease: "power2.out", overwrite: "auto" });
-  };
-
-  const handleMouseLeave = () => {
-    const btn = btnRef.current;
-    if (!btn) return;
-    gsap.to(btn, {
-      x: 0,
-      y: 0,
-      duration: 0.6,
-      ease: "elastic.out(1, 0.4)",
-      overwrite: "auto",
-    });
-  };
-
-  return (
-    <button
-      ref={btnRef}
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="group inline-flex items-center gap-3 font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-white hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0 focus:outline-none"
-      data-cursor="hover"
-    >
-      <span className="border-b border-white/40 pb-0.5 group-hover:border-white transition-colors">
-        OPEN CASE STUDY
-      </span>
-      <span className="inline-block transition-transform duration-300 group-hover:rotate-45 group-hover:translate-x-1 group-hover:-translate-y-1">
-        ↗
-      </span>
-    </button>
-  );
+  if (diffHours < 24) {
+    return `${diffHours}h ago`;
+  }
+  if (diffDays < 7) {
+    return `${diffDays}d ago`;
+  }
+  if (diffWeeks < 5) {
+    return `${diffWeeks}w ago`;
+  }
+  return `${diffMonths}mo ago`;
 }
 
 export default function Projects() {
   const { lenis } = useSmoothScroll();
   const sectionRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+
+  // Dynamic projects state: initializes with INITIAL_PROJECTS for instant hydration,
+  // then updates with real-time live deployment telemetry from /api/projects.
+  const [projects, setProjects] = useState<LiveProject[]>(INITIAL_PROJECTS);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Desktop slide container references
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -114,10 +73,48 @@ export default function Projects() {
   const bottomProgressBarRef = useRef<HTMLDivElement>(null);
 
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<LiveProject | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(false);
 
-  const activeProject = PROJECTS[activeProjectIndex] || PROJECTS[0];
+  const activeProject = projects[activeProjectIndex] || projects[0];
+
+  // Fetch real-time live project data from server-only API endpoint
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLiveProjects = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch("/api/projects");
+        if (res.ok) {
+          const data = await res.json();
+          if (
+            isMounted &&
+            Array.isArray(data.projects) &&
+            data.projects.length > 0
+          ) {
+            setProjects(data.projects);
+            // Refresh ScrollTrigger calculations after live data updates
+            setTimeout(() => {
+              ScrollTrigger.refresh();
+            }, 150);
+          }
+        }
+      } catch (err) {
+        console.warn(
+          "[Projects] Live telemetry fetch failed, falling back to local dataset:",
+          err
+        );
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchLiveProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -153,7 +150,7 @@ export default function Projects() {
 
     // Desktop: Pinned "one project at a time" scrubbed swap timeline
     mm.add("(min-width: 1024px)", () => {
-      // Set initial states: project 0 is visible, projects 1..3 hidden
+      // Set initial states: project 0 is visible, projects 1..n hidden
       gsap.set(slideRefs.current[0], { pointerEvents: "auto", zIndex: 10 });
       gsap.set(detailsRefs.current[0], { y: 0, opacity: 1 });
       gsap.set(visualRefs.current[0], {
@@ -188,7 +185,7 @@ export default function Projects() {
         gsap.set(giantNumberRefs.current[0], { autoAlpha: 1, yPercent: 0 });
       }
 
-      for (let k = 1; k < PROJECTS.length; k++) {
+      for (let k = 1; k < projects.length; k++) {
         gsap.set(slideRefs.current[k], { pointerEvents: "none", zIndex: 5 });
         gsap.set(detailsRefs.current[k], { y: 40, opacity: 0 });
         gsap.set(visualRefs.current[k], {
@@ -222,7 +219,7 @@ export default function Projects() {
           pin: true,
           scrub: 1,
           start: "top top",
-          end: () => `+=${(PROJECTS.length - 1) * 100}%`,
+          end: () => `+=${(projects.length - 1) * 100}%`,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             const p = self.progress;
@@ -233,13 +230,13 @@ export default function Projects() {
             }
 
             const idx = Math.min(
-              PROJECTS.length - 1,
-              Math.floor(p * PROJECTS.length + 0.15)
+              projects.length - 1,
+              Math.floor(p * projects.length + 0.15)
             );
             setActiveProjectIndex(idx);
 
             // Enforce strictly one counter visible; kill stale tweens
-            PROJECTS.forEach((_, k) => {
+            projects.forEach((_, k) => {
               const el = counterNumberRefs.current[k];
               if (!el) return;
               if (k === idx) {
@@ -270,7 +267,7 @@ export default function Projects() {
             });
 
             // Sync giant background number
-            PROJECTS.forEach((_, k) => {
+            projects.forEach((_, k) => {
               const gEl = giantNumberRefs.current[k];
               if (!gEl) return;
               if (k === idx) {
@@ -291,7 +288,7 @@ export default function Projects() {
       tl.to({}, { duration: 0.5 });
 
       // Build sequential swaps: slide i -> slide i + 1
-      for (let i = 0; i < PROJECTS.length - 1; i++) {
+      for (let i = 0; i < projects.length - 1; i++) {
         const nextIdx = i + 1;
         const stepLabel = `swap-${i}-to-${nextIdx}`;
 
@@ -488,14 +485,15 @@ export default function Projects() {
       navVisibilityTrigger.kill();
       mm.revert();
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projects.length]);
 
   // Smooth scroll to project via Lenis when clicking indicator dots
   const handleScrollToProject = (idx: number) => {
     if (!lenis) return;
     if (window.innerWidth >= 1024 && scrollTriggerRef.current) {
       const st = scrollTriggerRef.current;
-      const targetRatio = idx / (PROJECTS.length - 1);
+      const targetRatio = idx / (projects.length - 1);
       const targetScroll = st.start + targetRatio * (st.end - st.start);
       lenis.scrollTo(targetScroll, { duration: 1.2 });
     } else {
@@ -517,7 +515,7 @@ export default function Projects() {
             BACKGROUND LAYERS: Cross-fading Accent Glow + Faint Outlined Parallax Number
             ========================================================================= */}
         {/* Per-project accent radial glows that cross-fade */}
-        {PROJECTS.map((proj, idx) => (
+        {projects.map((proj, idx) => (
           <div
             key={proj.index}
             ref={(el) => {
@@ -538,7 +536,7 @@ export default function Projects() {
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none -z-10 overflow-hidden w-full flex items-center justify-center opacity-[0.06] will-change-transform"
         >
           <div className="relative h-[clamp(18rem,34vw,36rem)] w-[clamp(24rem,44vw,48rem)] flex items-center justify-center">
-            {PROJECTS.map((proj, idx) => (
+            {projects.map((proj, idx) => (
               <span
                 key={proj.index}
                 ref={(el) => {
@@ -564,6 +562,17 @@ export default function Projects() {
           <div className="w-[1px] h-full bg-white/30" />
         </div>
 
+        {/* Top-Right Live Sync Status Pill */}
+        {isLoading && (
+          <div className="absolute top-24 right-8 md:right-12 lg:right-16 z-30 flex items-center gap-2 font-mono text-[10px] sm:text-[11px] tracking-widest uppercase text-neutral-400 glass px-3.5 py-1.5 rounded-full border border-white/10 bg-black/40">
+            <span
+              className="w-2 h-2 rounded-full animate-ping"
+              style={{ backgroundColor: activeProject.accent }}
+            />
+            <span>SYNCING TELEMETRY...</span>
+          </div>
+        )}
+
         {/* =========================================================================
             DESKTOP PINNED VIEW: Vertically centered (h-screen, items-center, pt-24 pb-24)
             ========================================================================= */}
@@ -576,7 +585,7 @@ export default function Projects() {
             />
             {/* Overflow-hidden mask for single active number */}
             <div className="relative h-5 w-7 overflow-hidden">
-              {PROJECTS.map((proj, pIdx) => (
+              {projects.map((proj, pIdx) => (
                 <span
                   key={proj.index}
                   ref={(el) => {
@@ -588,11 +597,11 @@ export default function Projects() {
                 </span>
               ))}
             </div>
-            <span>/ 04 {"//"} SELECTED WORK</span>
+            <span>/ 03 {"//"} SELECTED WORK</span>
           </div>
 
           {/* Project Slides */}
-          {PROJECTS.map((project, idx) => (
+          {projects.map((project, idx) => (
             <div
               key={project.index}
               ref={(el) => {
@@ -600,10 +609,31 @@ export default function Projects() {
               }}
               className="absolute inset-0 w-full h-full flex items-center justify-between px-8 md:px-12 lg:px-16 pt-24 pb-24 max-w-[1560px] mx-auto pointer-events-none"
             >
-              {/* Left Column: Info, Split-Letter Title, Summary, Tags, Magnetic Button */}
+              {/* Left Column: Info, Status Badge, Title, Summary, Tags, Action Buttons */}
               <div className="w-full lg:w-5/12 xl:w-1/2 flex flex-col justify-center pr-6 lg:pr-12 z-20">
+                {/* Live Status Badge */}
+                <div className="flex items-center gap-2.5 mb-3 font-mono text-xs uppercase tracking-[0.22em] text-neutral-300">
+                  <span className="relative flex h-2 w-2">
+                    <span
+                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                      style={{ backgroundColor: project.accent }}
+                    />
+                    <span
+                      className="relative inline-flex rounded-full h-2 w-2"
+                      style={{ backgroundColor: project.accent }}
+                    />
+                  </span>
+                  <span className="font-semibold text-white">
+                    ● {project.status || "LIVE"}
+                  </span>
+                  <span className="text-neutral-500">·</span>
+                  <span className="text-neutral-400">
+                    deployed {formatDeployedTime(project.deployedAt)}
+                  </span>
+                </div>
+
                 {/* Split-Letter Title Reveal */}
-                <h2 className="font-anton uppercase tracking-[-0.02em] text-[clamp(3.5rem,6.5vw,7.2rem)] leading-[0.88] text-white my-1 flex flex-wrap">
+                <h2 className="font-anton uppercase tracking-[-0.02em] text-[clamp(3.5rem,6.2vw,6.8rem)] leading-[0.88] text-white my-1 flex flex-wrap">
                   {project.title.split("").map((char, cIdx) => (
                     <span key={cIdx} className="inline-block overflow-hidden py-1">
                       <span
@@ -619,7 +649,7 @@ export default function Projects() {
                   ))}
                 </h2>
 
-                {/* Left Details (Summary, Staggered Pills, Magnetic Button) */}
+                {/* Left Details (Summary, Staggered Pills, Action Buttons) */}
                 <div
                   ref={(el) => {
                     detailsRefs.current[idx] = el;
@@ -633,14 +663,14 @@ export default function Projects() {
 
                   {/* Tech Pills (Slide in one by one) */}
                   <div className="flex flex-wrap gap-2.5 mb-8">
-                    {project.tags.map((tag, tIdx) => (
+                    {(project.techTags || project.tags || []).map((tag, tIdx) => (
                       <span
                         key={tag}
                         ref={(el) => {
                           if (!pillsRefs.current[idx]) pillsRefs.current[idx] = [];
                           pillsRefs.current[idx][tIdx] = el;
                         }}
-                        className="px-3.5 py-1.5 rounded-full font-mono text-[11px] uppercase tracking-wider transition-colors duration-500 border will-change-transform"
+                        className="glass !rounded-full px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors duration-500 will-change-transform"
                         style={{
                           backgroundColor: `${project.accent}14`,
                           borderColor: `${project.accent}45`,
@@ -652,38 +682,89 @@ export default function Projects() {
                     ))}
                   </div>
 
-                  {/* Magnetic Case Study Button with Rotating Arrow */}
-                  <div>
-                    <MagneticCaseStudyButton
+                  {/* Action Buttons: "VISIT LIVE ↗" and "VIEW CODE ↗" */}
+                  <div className="flex flex-wrap items-center gap-3.5">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="glass group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.2em] font-semibold text-white transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
+                        style={{
+                          backgroundColor: `${project.accent}20`,
+                          borderColor: `${project.accent}55`,
+                          boxShadow: `0 0 20px ${project.accent}25`,
+                        }}
+                        data-cursor="hover"
+                      >
+                        <span>VISIT LIVE</span>
+                        <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                          ↗
+                        </span>
+                      </a>
+                    )}
+
+                    {project.repoUrl && (
+                      <a
+                        href={project.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="glass group inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.2em] text-neutral-300 hover:text-white transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] border border-white/15 hover:border-white/40 cursor-pointer"
+                        data-cursor="hover"
+                      >
+                        <svg
+                          className="w-3.5 h-3.5 fill-current text-white/80 group-hover:text-white"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                        </svg>
+                        <span>VIEW CODE</span>
+                        <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                          ↗
+                        </span>
+                      </a>
+                    )}
+
+                    <button
                       onClick={() => setSelectedProject(project)}
-                    />
+                      className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-2 ml-1"
+                      data-cursor="hover"
+                    >
+                      <span className="border-b border-white/20 pb-0.5 group-hover:border-white transition-colors">
+                        CASE STUDY
+                      </span>
+                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        ↗
+                      </span>
+                    </button>
                   </div>
                 </div>
               </div>
 
               {/* Right Column: Visual Container with Quick Accent Color Wipe */}
-              <div className="w-full lg:w-7/12 xl:w-1/2 flex items-center justify-center lg:justify-end mr-8 xl:mr-20 z-20 pointer-events-auto relative">
+              <div className="w-full lg:w-7/12 xl:w-1/2 flex items-center justify-center lg:justify-end mr-8 xl:mr-16 z-20 pointer-events-auto relative">
                 {/* Accent Color Sweep Bar across incoming visual on transition */}
                 <div
                   ref={(el) => {
                     sweepRefs.current[idx] = el;
                   }}
-                  className="absolute inset-0 z-30 pointer-events-none rounded-2xl will-change-transform"
+                  className="absolute inset-0 z-30 pointer-events-none rounded-[22px] will-change-transform"
                   style={{
                     backgroundColor: project.accent,
                     clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
                   }}
                 />
 
-                {/* Visual Component */}
+                {/* Glass Mock Browser Visual Component */}
                 <div
                   ref={(el) => {
                     visualRefs.current[idx] = el;
                   }}
                   className="w-full flex justify-end will-change-transform"
                 >
-                  <ProjectVisualItem
+                  <GlassMockBrowser
                     project={project}
+                    isActive={activeProjectIndex === idx}
                     onOpenModal={setSelectedProject}
                   />
                 </div>
@@ -706,7 +787,7 @@ export default function Projects() {
             {/* Continuous Vertical Guide Line */}
             <div className="absolute right-[5px] top-2 bottom-2 w-[1px] bg-white/15 pointer-events-none" />
 
-            {PROJECTS.map((proj, idx) => {
+            {projects.map((proj, idx) => {
               const isActive = activeProjectIndex === idx;
               return (
                 <button
@@ -778,7 +859,7 @@ export default function Projects() {
             MOBILE VIEW: Normal Vertical Stack (No Pin)
             ========================================================================= */}
         <div className="flex flex-col lg:hidden w-full divide-y divide-white/10 px-6 py-12">
-          {PROJECTS.map((proj, idx) => (
+          {projects.map((proj, idx) => (
             <div
               key={proj.index}
               id={`mobile-project-${idx}`}
@@ -791,7 +872,15 @@ export default function Projects() {
                     className="w-2 h-2 rounded-full"
                     style={{ backgroundColor: proj.accent }}
                   />
-                  <span>{proj.index} / 04</span>
+                  <span>{proj.index} / 03</span>
+                  <span className="text-neutral-500">·</span>
+                  <span className="font-semibold text-white">
+                    ● {proj.status || "LIVE"}
+                  </span>
+                  <span className="text-neutral-500">·</span>
+                  <span className="text-neutral-400">
+                    {formatDeployedTime(proj.deployedAt)}
+                  </span>
                 </div>
 
                 <h2 className="font-anton uppercase tracking-[-0.02em] text-4xl sm:text-5xl text-white mb-3">
@@ -804,10 +893,10 @@ export default function Projects() {
 
                 {/* Tech Pills */}
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {proj.tags.map((tag) => (
+                  {(proj.techTags || proj.tags || []).map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 rounded-full font-mono text-[11px] uppercase tracking-wider border"
+                      className="glass !rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-wider"
                       style={{
                         backgroundColor: `${proj.accent}14`,
                         borderColor: `${proj.accent}45`,
@@ -819,25 +908,50 @@ export default function Projects() {
                   ))}
                 </div>
 
-                {/* Case Study Trigger Button */}
-                <button
-                  onClick={() => setSelectedProject(proj)}
-                  className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-white cursor-pointer bg-transparent border-none p-0 w-fit"
-                  data-cursor="hover"
-                >
-                  <span className="border-b border-white/40 pb-0.5 group-hover:border-white transition-colors">
-                    OPEN CASE STUDY
-                  </span>
-                  <span className="inline-block transition-transform duration-300 group-hover:rotate-45 group-hover:translate-x-1 group-hover:-translate-y-1">
-                    ↗
-                  </span>
-                </button>
+                {/* Action Buttons: "VISIT LIVE ↗" and "VIEW CODE ↗" */}
+                <div className="flex flex-wrap items-center gap-3">
+                  {proj.liveUrl && (
+                    <a
+                      href={proj.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="glass group relative inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-xs uppercase tracking-[0.2em] font-semibold text-white"
+                      style={{
+                        backgroundColor: `${proj.accent}20`,
+                        borderColor: `${proj.accent}55`,
+                      }}
+                    >
+                      <span>VISIT LIVE</span>
+                      <span>↗</span>
+                    </a>
+                  )}
+
+                  {proj.repoUrl && (
+                    <a
+                      href={proj.repoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="glass group inline-flex items-center gap-2 px-3.5 py-2 rounded-full font-mono text-xs uppercase tracking-[0.2em] text-neutral-300 hover:text-white border border-white/15"
+                    >
+                      <span>VIEW CODE</span>
+                      <span>↗</span>
+                    </a>
+                  )}
+
+                  <button
+                    onClick={() => setSelectedProject(proj)}
+                    className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-white cursor-pointer bg-transparent border-none p-2"
+                  >
+                    CASE STUDY ↗
+                  </button>
+                </div>
               </div>
 
-              {/* Animated Visual */}
+              {/* Animated Mock Browser Visual */}
               <div className="w-full flex justify-center">
-                <ProjectVisualItem
+                <GlassMockBrowser
                   project={proj}
+                  isActive={true}
                   onOpenModal={setSelectedProject}
                 />
               </div>

@@ -380,13 +380,11 @@ export default function About() {
             className="w-full h-[1px] bg-white/10 origin-left mb-12 sm:mb-16 will-change-transform"
           />
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 relative">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative">
             {ABOUT_DATA.stats.map((stat, idx) => (
               <div
                 key={stat.id}
-                className={`relative flex flex-col justify-between ${
-                  idx > 0 ? "lg:pl-10 xl:pl-12" : ""
-                } ${idx < ABOUT_DATA.stats.length - 1 ? "lg:pr-10 xl:pr-12" : ""}`}
+                className="glass p-5 sm:p-6 md:p-8 rounded-2xl flex flex-col justify-between"
               >
                 {/* Thin Vertical Divider (Desktop, draws in from top) */}
                 {idx > 0 && (

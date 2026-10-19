@@ -1,145 +1,198 @@
-export interface ProjectStat {
-  label: string;
-  value: number;
-  prefix?: string;
-  suffix?: string;
-}
-
-export interface Project {
-  index: string;
+export interface ProjectConfig {
+  slug: string;
   title: string;
-  description: string;
-  summary: string;
-  logo?: string;
-  visual: "injuryconnect" | "synapse" | "kronos" | "voxmetric";
-  tags: string[];
-  image: string;
-  video?: string;
-  link: string;
+  netlifySite?: string;
+  vercelProject?: string;
+  githubRepo: string;
   accent: string;
-  role: string;
-  features: string[];
-  stats: ProjectStat[];
-  gallery?: string[];
+  summaryOverride?: string;
 }
 
-export const PROJECTS: Project[] = [
+export interface LiveProject {
+  index: string;
+  slug: string;
+  title: string;
+  summary: string;
+  techTags: string[];
+  liveUrl: string;
+  repoUrl: string;
+  status: "LIVE" | "BUILDING" | "COMING SOON" | "ERROR";
+  deployedAt?: string;
+  thumbnail: string;
+  accent: string;
+  matchedResource?: {
+    provider: "netlify" | "vercel" | "none";
+    siteName?: string;
+    repoName?: string;
+  };
+  isComingSoon?: boolean;
+
+  // Compatibility fields for CaseStudyModal and detailed views
+  tags?: string[];
+  link?: string;
+  image?: string;
+  description?: string;
+  role?: string;
+  stats?: Array<{ label: string; value: number; prefix?: string; suffix?: string }>;
+  features?: string[];
+  gallery?: string[];
+  visual?: string;
+}
+
+// Backwards compatibility alias
+export type Project = LiveProject;
+
+export const PROJECT_CONFIGS: ProjectConfig[] = [
+  {
+    slug: "abhirent",
+    title: "ABHIRENT",
+    netlifySite: "abhirent",
+    githubRepo: "Abhirent",
+    accent: "#38bdf8", // Electric Sky
+    summaryOverride:
+      "Full-stack rental marketplace and equipment reservation platform. Features real-time inventory management, automated scheduling, customer booking flows, and robust edge deployment.",
+  },
+  {
+    slug: "amalabiocetulas",
+    title: "AMALA BIOCEUTICALS",
+    netlifySite: "amalabioceuticals",
+    githubRepo: "Amalabioceuticals",
+    accent: "#10b981", // Emerald Neon
+    summaryOverride:
+      "Enterprise pharmaceutical commerce and healthcare portal showcasing verified clinical formulations, laboratory batch authentications, and streamlined wholesale distribution inquiries.",
+  },
+  {
+    slug: "portvia",
+    title: "PORTVIA",
+    netlifySite: "portvia",
+    vercelProject: "portvia",
+    githubRepo: "portvia",
+    accent: "#a855f7", // Deep Purple
+    summaryOverride:
+      "AI-accelerated developer portfolio builder and digital presence studio that converts GitHub commit streams, deployment telemetry, and verified certifications into interactive showcases.",
+  },
+];
+
+export const INITIAL_PROJECTS: LiveProject[] = [
   {
     index: "01",
-    title: "INJURYCONNECT",
-    description:
-      "Attorney communication & clinical intelligence platform orchestrating legal caseloads, medical record intake, and automated litigation triage.",
+    slug: "abhirent",
+    title: "ABHIRENT",
     summary:
-      "Connects personal injury law firms directly with medical clinics to eliminate paperwork delays. Automates clinical record intake, extracts injury severity with OCR, and lets attorneys message clients in real time.",
-    logo: "/projects/norbu-logo.svg",
-    visual: "injuryconnect",
-    tags: ["NestJS", "Next.js", "Postgres", "AWS"],
-    image: "/projects/injuryconnect.svg",
-    video: "/projects/injuryconnect.mp4",
-    link: "https://injuryconnect.example.com",
-    accent: "#38bdf8", // Electric Blue
-    role: "Lead Full-Stack Architect & Engineering Lead",
-    features: [
-      "Automated OCR clinical extraction with HIPAA-compliant audit trails and end-to-end encryption.",
-      "Real-time WebSocket attorney-client messaging portal with low-latency push queues.",
-      "Automated case score indexing using pgvector similarity search on injury patterns.",
-    ],
+      "Full-stack rental marketplace and equipment reservation platform. Features real-time inventory management, automated scheduling, customer booking flows, and robust edge deployment.",
+    techTags: ["TypeScript", "Next.js", "React", "CSS", "Tailwind"],
+    liveUrl: "https://abhirent.netlify.app",
+    repoUrl: "https://github.com/abhishekverma0700/Abhirent",
+    status: "LIVE",
+    deployedAt: "2026-02-27T21:03:41.011Z",
+    thumbnail:
+      "https://d33wubrfki0l68.cloudfront.net/69a206ad2f26da00084dd10d/screenshot_2026-02-27-21-03-55-0000.webp",
+    accent: "#38bdf8",
+    matchedResource: {
+      provider: "netlify",
+      siteName: "abhirent",
+      repoName: "Abhirent",
+    },
+    isComingSoon: false,
+    tags: ["TypeScript", "Next.js", "React", "Tailwind", "Edge Functions"],
+    link: "https://abhirent.netlify.app",
+    image:
+      "https://d33wubrfki0l68.cloudfront.net/69a206ad2f26da00084dd10d/screenshot_2026-02-27-21-03-55-0000.webp",
+    description:
+      "Full-stack rental marketplace and equipment reservation platform. Features real-time inventory management, automated scheduling, customer booking flows, and robust edge deployment.",
+    role: "Lead Full-Stack Architect",
     stats: [
-      { label: "CASES INGESTED", value: 148, prefix: "", suffix: "k+" },
-      { label: "TRIAGE ACCURACY", value: 99.4, prefix: "", suffix: "%" },
-      { label: "PROCESSING TIME", value: 4.2, prefix: "", suffix: "s" },
+      { label: "Booking Latency", value: 45, suffix: "ms" },
+      { label: "Uptime SLA", value: 99.9, suffix: "%" },
+      { label: "Active Listings", value: 120, prefix: "+" },
     ],
-    gallery: [
-      "/projects/injuryconnect.svg",
-      "/projects/synapse.svg",
-      "/projects/kronos.svg",
+    features: [
+      "Dynamic reservation calendar with conflict resolution and automated booking buffers",
+      "Real-time asset telemetry, payment gateway integration, and instant PDF invoice generation",
+      "Optimized edge rendering with zero-cold-start performance across global edge nodes",
     ],
+    visual: "abhirent",
   },
   {
     index: "02",
-    title: "SYNAPSE AI",
-    description:
-      "Autonomous multi-agent research and reasoning pipeline integrating vector similarity lookups, RAG ingestion, and real-time streaming.",
+    slug: "amalabiocetulas",
+    title: "AMALA BIOCEUTICALS",
     summary:
-      "An autonomous swarm of specialized AI agents that collaborates on complex market and technical research. Coordinates multi-hop vector search, synthesizes findings, and streams verified answers in milliseconds.",
-    visual: "synapse",
-    tags: ["Python", "FastAPI", "Pinecone", "LangChain"],
-    image: "/projects/synapse.svg",
-    link: "https://synapse.example.com",
-    accent: "#a855f7", // Deep Purple
-    role: "AI Systems Engineer & Distributed Architecture",
-    features: [
-      "Dynamic multi-agent supervisor orchestrating autonomous research workflows.",
-      "Hybrid vector + BM25 keyword search yielding sub-80ms semantic retrieval.",
-      "Server-sent events (SSE) streaming engine delivering real-time agent token telemetry.",
-    ],
+      "Enterprise pharmaceutical commerce and healthcare portal showcasing verified clinical formulations, laboratory batch authentications, and streamlined wholesale distribution inquiries.",
+    techTags: ["TypeScript", "JavaScript", "HTML", "CSS", "Healthcare"],
+    liveUrl: "https://amalabioceuticals.in",
+    repoUrl: "https://github.com/abhishekverma0700/Amalabioceuticals",
+    status: "LIVE",
+    deployedAt: "2026-02-21T16:00:40.583Z",
+    thumbnail:
+      "https://d33wubrfki0l68.cloudfront.net/6999d6a88900220008fab7af/screenshot_2026-02-21-16-00-53-0000.webp",
+    accent: "#10b981",
+    matchedResource: {
+      provider: "netlify",
+      siteName: "amalabioceuticals",
+      repoName: "Amalabioceuticals",
+    },
+    isComingSoon: false,
+    tags: ["TypeScript", "Healthcare", "E-Commerce", "Tailwind", "Responsive"],
+    link: "https://amalabioceuticals.in",
+    image:
+      "https://d33wubrfki0l68.cloudfront.net/6999d6a88900220008fab7af/screenshot_2026-02-21-16-00-53-0000.webp",
+    description:
+      "Enterprise pharmaceutical commerce and healthcare portal showcasing verified clinical formulations, laboratory batch authentications, and streamlined wholesale distribution inquiries.",
+    role: "Full-Stack Engineer & Designer",
     stats: [
-      { label: "AGENTS DEPLOYED", value: 1240, prefix: "", suffix: "+" },
-      { label: "EMBEDDINGS INDEXED", value: 84, prefix: "", suffix: "M" },
-      { label: "P99 RETRIEVAL", value: 112, prefix: "", suffix: "ms" },
+      { label: "Product Catalog", value: 85, prefix: "+" },
+      { label: "Lighthouse Score", value: 98, suffix: "/100" },
+      { label: "Wholesale Conversions", value: 34, suffix: "%" },
     ],
-    gallery: [
-      "/projects/synapse.svg",
-      "/projects/voxmetric.svg",
-      "/projects/injuryconnect.svg",
+    features: [
+      "Regulatory-compliant clinical documentation access and verified batch testing reports",
+      "Secure wholesale quotation request portal with automated volume discounting calculators",
+      "Mobile-optimized catalog browsing with high-resolution packaging previews",
     ],
+    visual: "amalabioceuticals",
   },
   {
     index: "03",
-    title: "KRONOS CLOUD",
-    description:
-      "Ultra-low latency financial telemetry engine handling 120k events/sec with distributed event queues and partition-tolerant caches.",
+    slug: "portvia",
+    title: "PORTVIA",
     summary:
-      "A real-time financial telemetry platform processing over 120,000 transactions per second. Replaces batch ETL jobs with instant Kafka streaming queues, fault-tolerant Redis caching, and automated drift recovery.",
-    visual: "kronos",
-    tags: ["Go", "Kafka", "Redis", "Terraform"],
-    image: "/projects/kronos.svg",
-    link: "https://kronos.example.com",
-    accent: "#10b981", // Emerald Neon
-    role: "Principal Infrastructure & Backend Engineer",
-    features: [
-      "High-throughput event ingest pipeline processing 120,000 transactions/second with zero dropped messages.",
-      "Multi-region Kafka cluster topology orchestrated with automated Terraform drift correction.",
-      "In-memory Redis pipeline caching layer cutting API latency from 45ms to 1.8ms.",
-    ],
-    stats: [
-      { label: "THROUGHPUT PEAK", value: 120, prefix: "", suffix: "k/s" },
-      { label: "ACTIVE REGIONS", value: 64, prefix: "", suffix: " pts" },
-      { label: "SYSTEM UPTIME", value: 99.999, prefix: "", suffix: "%" },
-    ],
-    gallery: [
-      "/projects/kronos.svg",
-      "/projects/injuryconnect.svg",
-      "/projects/voxmetric.svg",
-    ],
-  },
-  {
-    index: "04",
-    title: "VOX METRIC",
+      "AI-accelerated developer portfolio builder and digital presence studio that converts GitHub commit streams, deployment telemetry, and verified certifications into interactive showcases.",
+    techTags: ["TypeScript", "PostgreSQL", "React", "Tailwind", "Vite"],
+    liveUrl: "https://portvia.netlify.app",
+    repoUrl: "https://github.com/abhishekverma0700/portvia",
+    status: "LIVE",
+    deployedAt: "2025-12-20T13:35:16.830Z",
+    thumbnail:
+      "https://d33wubrfki0l68.cloudfront.net/6946a614f0295b00082c7383/screenshot_2025-12-20-13-35-46-0000.webp",
+    accent: "#a855f7",
+    matchedResource: {
+      provider: "netlify",
+      siteName: "portvia",
+      repoName: "portvia",
+    },
+    isComingSoon: false,
+    tags: ["TypeScript", "PostgreSQL", "React", "Tailwind", "Vite"],
+    link: "https://portvia.netlify.app",
+    image:
+      "https://d33wubrfki0l68.cloudfront.net/6946a614f0295b00082c7383/screenshot_2025-12-20-13-35-46-0000.webp",
     description:
-      "Full-stack observability suite providing continuous runtime tracing, automated query anomaly detection, and synthetic health probes.",
-    summary:
-      "Full-stack observability suite that monitors distributed services, tracks API bottlenecks, and detects performance anomalies before outages happen. Analyzes billions of traces with sub-second queries.",
-    visual: "voxmetric",
-    tags: ["TypeScript", "ClickHouse", "GraphQL", "Docker"],
-    image: "/projects/voxmetric.svg",
-    link: "https://voxmetric.example.com",
-    accent: "#f59e0b", // Amber Glow
-    role: "Systems Architect & Full-Stack Developer",
-    features: [
-      "Distributed OpenTelemetry span collector aggregating 2.4 billion daily RPC calls.",
-      "Columnar ClickHouse analytical store providing instant aggregation over petabyte datasets.",
-      "Custom GraphQL schema federation uniting heterogeneous microservice traces into a unified graph.",
-    ],
+      "AI-accelerated developer portfolio builder and digital presence studio that converts GitHub commit streams, deployment telemetry, and verified certifications into interactive showcases.",
+    role: "Full-Stack Creator",
     stats: [
-      { label: "DAILY TRACES", value: 2.4, prefix: "", suffix: "B" },
-      { label: "STORAGE REDUCTION", value: 74, prefix: "", suffix: "%" },
-      { label: "QUERY ANOMALIES", value: 0, prefix: "<", suffix: "0.1%" },
+      { label: "Portfolios Generated", value: 350, prefix: "+" },
+      { label: "Deploy Time", value: 12, suffix: "s" },
+      { label: "Custom Themes", value: 18, prefix: "" },
     ],
-    gallery: [
-      "/projects/voxmetric.svg",
-      "/projects/kronos.svg",
-      "/projects/synapse.svg",
+    features: [
+      "Automated GitHub & Vercel telemetry ingestion for real-time live activity tracking",
+      "Instant responsive layout generator supporting bespoke kinetic typography and dark mode",
+      "One-click custom domain routing with integrated SSL termination and preview branches",
     ],
+    visual: "portvia",
   },
 ];
+
+export const PROJECTS: LiveProject[] = INITIAL_PROJECTS;
+export default PROJECTS;
+

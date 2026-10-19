@@ -3,19 +3,32 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
+import { CONTACT_DATA } from "@/data/contact";
 
 const MENU_ITEMS = [
   { label: "WORK", href: "#work", desc: "SELECTED CLIENT & OPEN-SOURCE CASE STUDIES" },
   { label: "ABOUT", href: "#about", desc: "BACKGROUND, METHODOLOGY & TIMELINE" },
   { label: "SKILLS", href: "#skills", desc: "FULL-STACK, CLOUD & AI TECH STACK" },
-  { label: "CERTIFICATIONS", href: "#certifications", desc: "VERIFIED CREDENTIALS & SPECIALIZATIONS" },
+  { label: "PROOF OF WORK", href: "#proof-of-work", desc: "LIVE GITHUB, DEPLOYS, CREDENTIALS & NETWORK" },
   { label: "CONTACT", href: "#contact", desc: "START A PROJECT OR SAY HELLO" },
 ];
 
 export default function Nav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Detect scrolling past hero
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 350);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Magnetic MENU button effect
   useEffect(() => {
@@ -63,12 +76,20 @@ export default function Nav() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 w-full px-6 py-6 md:px-12 md:py-8 lg:px-16 pointer-events-auto bg-transparent border-0 border-none shadow-none backdrop-filter-none backdrop-blur-none">
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 w-full pointer-events-none transition-all duration-300 flex justify-center ${
+          isScrolled ? "py-4 px-4 sm:px-6" : "py-6 md:py-8 px-6 md:px-12 lg:px-16"
+        }`}
+      >
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="max-w-[1920px] mx-auto flex items-center justify-between bg-transparent border-0 border-none shadow-none"
+          className={`pointer-events-auto transition-all duration-300 flex items-center justify-between ${
+            isScrolled
+              ? "glass w-full max-w-4xl px-6 py-3 !rounded-full shadow-2xl"
+              : "w-full max-w-[1920px] bg-transparent border-0 border-none shadow-none"
+          }`}
         >
           {/* Left: ABHISHEK */}
           <div className="flex items-center gap-2.5 group cursor-pointer" data-cursor="hover">
@@ -100,12 +121,12 @@ export default function Nav() {
             animate={{ opacity: 1, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
             exit={{ opacity: 0, clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[80] bg-[#0a0a0a]/98 backdrop-blur-xl flex flex-col justify-between px-6 py-10 md:px-16 md:py-16 text-white select-none overflow-hidden"
+            className="fixed inset-0 z-[80] bg-[#0a0a0a]/95 flex flex-col justify-between px-6 py-10 md:px-16 md:py-16 text-white select-none overflow-hidden"
           >
             <div className="max-w-[1920px] mx-auto w-full pt-16 flex flex-col justify-between h-full">
-              {/* Menu Navigation Links */}
+              {/* Menu Navigation Links Panel */}
               <div
-                className="flex flex-col gap-4 sm:gap-6 md:gap-8 my-auto"
+                className="glass max-w-5xl mx-auto w-full p-8 md:p-14 rounded-3xl flex flex-col gap-4 sm:gap-6 md:gap-8 my-auto"
                 onMouseLeave={() => setHoveredIdx(null)}
               >
                 {MENU_ITEMS.map((item, idx) => {
@@ -154,9 +175,9 @@ export default function Nav() {
               <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs font-mono uppercase tracking-[0.22em] text-neutral-400">
                 <div className="flex items-center gap-3">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span>NEW DELHI // REMOTE WORLDWIDE</span>
+                  <span>{`${CONTACT_DATA.location.toUpperCase()} // REMOTE WORLDWIDE`}</span>
                 </div>
-                <span>AVAILABLE FOR FREELANCE & FULL-TIME</span>
+                <span>{CONTACT_DATA.availability}</span>
               </div>
             </div>
           </motion.div>

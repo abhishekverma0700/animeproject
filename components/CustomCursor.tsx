@@ -41,6 +41,14 @@ export default function CustomCursor() {
       // Check if hovering project with data-cursor="view" or card with data-cursor="flip"
       const target = e.target as HTMLElement | null;
       if (target) {
+        // Dynamic cursor-following gradient borders for .glass elements
+        const glassTarget = target.closest(".glass") as HTMLElement | null;
+        if (glassTarget) {
+          const rect = glassTarget.getBoundingClientRect();
+          glassTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+          glassTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
+        }
+
         const viewTarget = target.closest('[data-cursor="view"]');
         if (viewTarget) {
           setCursorText("VIEW");

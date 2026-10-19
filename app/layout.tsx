@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={anton.variable}>
-      <body className="bg-[#0a0a0a] text-white antialiased selection:bg-white selection:text-black">
+      <body className="bg-[#0a0a0a] text-white antialiased selection:bg-[#38bdf8] selection:text-[#0a0a0a]">
         <CustomCursor />
         <div className="grain-overlay" aria-hidden="true" />
         <SmoothScroll>

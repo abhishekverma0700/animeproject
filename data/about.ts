@@ -29,6 +29,8 @@ export interface AboutData {
   principles: WorkPrinciple[];
 }
 
+import { CONTACT_DATA } from "./contact";
+
 export const ABOUT_DATA: AboutData = {
   sectionLabel: "(ABOUT)",
   sectionNumber: "02 // PHILOSOPHY & PROFILE",
@@ -40,7 +42,7 @@ export const ABOUT_DATA: AboutData = {
     alt: "Abhishek — Full-Stack Engineer and System Architect",
     badgeText: "AVAILABLE FOR WORK • AVAILABLE FOR WORK • ",
     caption: "ABHISHEK VERMA",
-    location: "NEW DELHI // UTC+5:30",
+    location: `${CONTACT_DATA.location.toUpperCase()} // UTC+5:30`,
   },
   stats: [
     {

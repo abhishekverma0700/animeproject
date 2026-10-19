@@ -9,42 +9,93 @@ export interface SocialLink {
 
 export interface ContactData {
   email: string;
+  phone: string;
+  whatsappUrl: string;
   scheduleCallUrl: string;
   availability: string;
   location: string;
+  heroLocation: string;
   coordinates: string;
   timezone: string;
+  credlyUrl: string;
+  credlyUsername: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  emailParts: readonly [string, string];
+  phoneParts: readonly [string, string];
+  whatsappParts: readonly [string, string];
   socials: SocialLink[];
 }
 
+// Split strings for basic scraper protection
+export const EMAIL_PARTS = ["abhishekverma3781", "gmail.com"] as const;
+export const PHONE_PARTS = ["+91", "9452601372"] as const;
+export const WHATSAPP_PARTS = ["91", "9452601372"] as const;
+
+export function getDecryptedEmail(): string {
+  return `${EMAIL_PARTS[0]}@${EMAIL_PARTS[1]}`;
+}
+
+export function getDecryptedPhone(): string {
+  return `${PHONE_PARTS[0]}${PHONE_PARTS[1]}`;
+}
+
+export function getMailtoLink(): string {
+  return `mailto:${EMAIL_PARTS[0]}@${EMAIL_PARTS[1]}`;
+}
+
+export function getTelLink(): string {
+  return `tel:${PHONE_PARTS[0]}${PHONE_PARTS[1]}`;
+}
+
+export function getWhatsAppLink(): string {
+  return `https://wa.me/${WHATSAPP_PARTS[0]}${WHATSAPP_PARTS[1]}`;
+}
+
 export const CONTACT_DATA: ContactData = {
-  email: "contact@abhishek.dev",
+  get email() {
+    return getDecryptedEmail();
+  },
+  get phone() {
+    return getDecryptedPhone();
+  },
+  get whatsappUrl() {
+    return getWhatsAppLink();
+  },
   scheduleCallUrl: "https://cal.com/abhishek/intro-call",
   availability: "AVAILABLE FOR FREELANCE & FULL-TIME",
-  location: "NEW DELHI, INDIA",
-  coordinates: "28.6139° N, 77.2090° E",
+  location: "Noida, India",
+  heroLocation: "BASED IN NOIDA, INDIA",
+  coordinates: "N 28.5° / E 77.4°",
   timezone: "Asia/Kolkata",
+  credlyUrl: "https://www.credly.com/users/abhishek-verma.fcc70cae",
+  credlyUsername: "abhishek-verma.fcc70cae",
+  githubUrl: "https://github.com/abhishekverma0700",
+  linkedinUrl: "https://www.linkedin.com/in/abhishek-verma-sde/",
+  emailParts: EMAIL_PARTS,
+  phoneParts: PHONE_PARTS,
+  whatsappParts: WHATSAPP_PARTS,
   socials: [
-    {
-      id: "github",
-      name: "GITHUB",
-      url: "https://github.com",
-      handle: "@abhishek",
-      note: "01 // OPEN SOURCE & REPOSITORIES",
-    },
     {
       id: "linkedin",
       name: "LINKEDIN",
-      url: "https://linkedin.com",
-      handle: "in/abhishek",
-      note: "02 // PROFESSIONAL NETWORK",
+      url: "https://www.linkedin.com/in/abhishek-verma-sde/",
+      handle: "in/abhishek-verma-sde",
+      note: "01 // PROFESSIONAL NETWORK",
     },
     {
-      id: "x",
-      name: "X",
-      url: "https://x.com",
-      handle: "@abhishek",
-      note: "03 // THOUGHTS & DISPATCHES",
+      id: "github",
+      name: "GITHUB",
+      url: "https://github.com/abhishekverma0700",
+      handle: "@abhishekverma0700",
+      note: "02 // OPEN SOURCE & REPOSITORIES",
+    },
+    {
+      id: "credly",
+      name: "CREDLY",
+      url: "https://www.credly.com/users/abhishek-verma.fcc70cae",
+      handle: "abhishek-verma.fcc70cae",
+      note: "03 // VERIFIED CREDENTIALS",
     },
     {
       id: "resume",

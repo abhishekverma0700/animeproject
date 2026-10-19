@@ -113,11 +113,11 @@ export default function CaseStudyModal({
           </button>
 
           <div className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 hidden sm:block">
-            CASE STUDY [{project.index} / 04]
+            CASE STUDY [{project.index} / 03]
           </div>
 
           <a
-            href={project.link}
+            href={project.link || project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-white hover:text-white transition-colors"
@@ -141,7 +141,7 @@ export default function CaseStudyModal({
                 style={{ backgroundColor: project.accent }}
               />
               <span className="font-mono text-xs uppercase tracking-[0.28em] text-neutral-400">
-                {project.role}
+                {project.role || "Lead Architect"}
               </span>
             </div>
 
@@ -150,7 +150,7 @@ export default function CaseStudyModal({
             </h1>
 
             <p className="text-neutral-300 font-sans text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mt-2">
-              {project.description}
+              {project.description || project.summary}
             </p>
           </div>
 
@@ -160,10 +160,11 @@ export default function CaseStudyModal({
             className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-[#121212] shadow-2xl"
           >
             <Image
-              src={project.image}
+              src={project.image || project.thumbnail || "/placeholder.png"}
               alt={project.title}
               fill
               priority
+              unoptimized
               sizes="100vw"
               className="object-cover"
             />
@@ -177,10 +178,10 @@ export default function CaseStudyModal({
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-              {project.stats.map((stat) => (
+              {(project.stats || []).map((stat) => (
                 <div
                   key={stat.label}
-                  className="p-6 md:p-8 rounded-xl bg-white/[0.03] border border-white/10 flex flex-col justify-between"
+                  className="glass p-6 md:p-8 rounded-2xl flex flex-col justify-between"
                 >
                   <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400 mb-4">
                     {stat.label}
@@ -207,10 +208,10 @@ export default function CaseStudyModal({
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {project.features.map((feature, i) => (
+              {(project.features || []).map((feature, i) => (
                 <div
                   key={i}
-                  className="p-6 md:p-8 rounded-xl bg-white/[0.03] border border-white/10 flex flex-col justify-between gap-6"
+                  className="glass p-6 md:p-8 rounded-2xl flex flex-col justify-between gap-6"
                 >
                   <span className="font-mono text-xs tracking-widest text-neutral-500">
                     0{i + 1}
@@ -234,10 +235,10 @@ export default function CaseStudyModal({
             </h3>
 
             <div className="flex flex-wrap gap-3">
-              {project.tags.map((tag) => (
+              {(project.tags || project.techTags || []).map((tag) => (
                 <span
                   key={tag}
-                  className="px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wider border transition-colors"
+                  className="glass !rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors"
                   style={{
                     backgroundColor: `${project.accent}14`,
                     borderColor: `${project.accent}40`,

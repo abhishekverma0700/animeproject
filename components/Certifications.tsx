@@ -504,7 +504,7 @@ export default function Certifications() {
                     >
                       {/* CARD FRONT FACE */}
                       <div
-                        className="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden border bg-[#111111]/90 backdrop-blur-xl transition-all duration-300 [backface-visibility:hidden]"
+                        className="glass absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 [backface-visibility:hidden]"
                         style={{
                           borderColor: isHovered ? `${card.accent}88` : "rgba(255, 255, 255, 0.12)",
                           boxShadow: isHovered
@@ -582,7 +582,7 @@ export default function Certifications() {
 
                       {/* CARD BACK FACE (rotateY 180) */}
                       <div
-                        className="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden border bg-[#0d0d0d]/95 backdrop-blur-2xl transition-all duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)]"
+                        className="glass absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)]"
                         style={{
                           borderColor: `${card.accent}66`,
                           boxShadow: `0 20px 45px -10px ${card.accent}30, inset 0 1px 1px rgba(255,255,255,0.2)`,
@@ -695,7 +695,7 @@ export default function Certifications() {
                   >
                     {/* Front Face */}
                     <div
-                      className="absolute inset-0 w-full h-full rounded-2xl p-6 flex flex-col justify-between overflow-hidden border bg-[#111111]/95 backdrop-blur-xl [backface-visibility:hidden] shadow-2xl"
+                      className="glass absolute inset-0 w-full h-full rounded-2xl p-6 flex flex-col justify-between overflow-hidden [backface-visibility:hidden] shadow-2xl"
                       style={{
                         borderColor: `${card.accent}55`,
                         boxShadow: `0 16px 40px -10px ${card.accent}25, inset 0 1px 0 rgba(255,255,255,0.1)`,
@@ -746,7 +746,7 @@ export default function Certifications() {
 
                     {/* Back Face */}
                     <div
-                      className="absolute inset-0 w-full h-full rounded-2xl p-6 flex flex-col justify-between overflow-hidden border bg-[#0d0d0d]/98 backdrop-blur-2xl [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-2xl"
+                      className="glass absolute inset-0 w-full h-full rounded-2xl p-6 flex flex-col justify-between overflow-hidden [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-2xl"
                       style={{
                         borderColor: `${card.accent}66`,
                         boxShadow: `0 16px 40px -10px ${card.accent}30, inset 0 1px 1px rgba(255,255,255,0.2)`,
