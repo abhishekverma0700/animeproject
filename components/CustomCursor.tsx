@@ -72,6 +72,13 @@ export default function CustomCursor() {
           return;
         }
 
+        const exploreTarget = target.closest('[data-cursor="explore"]');
+        if (exploreTarget && !interactiveChild) {
+          setCursorText("EXPLORE");
+          setIsHovered(true);
+          return;
+        }
+
         const interactive = target.closest(
           'a, button, [role="button"], input, textarea, select, [data-cursor="hover"], [data-cursor="photo"], .cursor-pointer'
         );
