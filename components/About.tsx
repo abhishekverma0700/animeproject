@@ -64,22 +64,9 @@ export default function About() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // 1. Subtle background transition from #0a0a0a to #0f0f0f on section entry
+      // 1. Clean background on section entry
       if (sectionRef.current) {
-        gsap.fromTo(
-          sectionRef.current,
-          { backgroundColor: "#0a0a0a" },
-          {
-            backgroundColor: "#0f0f0f",
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 90%",
-              end: "top 40%",
-              scrub: true,
-            },
-          }
-        );
+        gsap.set(sectionRef.current, { backgroundColor: "#F5F3EE" });
       }
 
       // 2. Header (ABOUT) label fade-in
@@ -101,13 +88,13 @@ export default function About() {
         );
       }
 
-      // 3. Statement word-by-word scrubbed opacity (0.15 -> 1)
+      // 3. Statement word-by-word scrubbed opacity (0.2 -> 1)
       if (statementRef.current) {
         const words = statementRef.current.querySelectorAll(".about-word");
         if (words.length > 0) {
           gsap.fromTo(
             words,
-            { opacity: 0.15 },
+            { opacity: 0.2 },
             {
               opacity: 1,
               stagger: 0.04,
@@ -223,31 +210,25 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative w-full min-h-screen bg-[#0f0f0f] text-white py-24 md:py-32 lg:py-40 px-6 md:px-12 lg:px-20 overflow-hidden border-t border-white/5 transition-colors duration-500"
+      className="relative w-full min-h-screen bg-[#F5F3EE] text-[#111111] py-24 md:py-32 lg:py-40 px-6 md:px-12 lg:px-20 overflow-hidden border-t border-[rgba(17,17,17,0.10)] transition-colors duration-500"
     >
-      {/* Background Accent Radial Glow */}
-      <div
-        className="pointer-events-none absolute -top-48 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-emerald-500/[0.025] blur-[160px] rounded-full"
-        aria-hidden="true"
-      />
-
       <div className="max-w-[1720px] mx-auto w-full relative z-10">
         {/* Section Header: Label & Mono Marker */}
         <div
           ref={headerRef}
-          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-12 sm:pb-16 border-b border-white/10 mb-16 lg:mb-24"
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-12 sm:pb-16 border-b border-[rgba(17,17,17,0.10)] mb-16 lg:mb-24"
         >
           <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/90">
+            <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#111111] font-semibold">
               {ABOUT_DATA.sectionLabel}
             </span>
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
               {ABOUT_DATA.sectionNumber}
             </span>
           </div>
 
-          <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-400">
+          <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[#6B6B6B]">
             ENGINEERING ARCHITECT & FULL-STACK SPECIALIST
           </div>
         </div>
@@ -257,19 +238,19 @@ export default function About() {
           {/* Left Column: Big Statement Paragraph */}
           <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-between">
             <div className="mb-4">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 block mb-6">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B] block mb-6">
                 {"// EXECUTIVE SUMMARY"}
               </span>
 
               {/* Big statement paragraph with word-by-word scrubbed opacity */}
               <p
                 ref={statementRef}
-                className="font-anton uppercase tracking-[-0.015em] text-3xl sm:text-4xl md:text-5xl lg:text-[3.2vw] xl:text-[3.6vw] leading-[1.08] text-white"
+                className="font-anton uppercase tracking-[-0.015em] text-3xl sm:text-4xl md:text-5xl lg:text-[3.2vw] xl:text-[3.6vw] leading-[1.08] text-[#111111]"
               >
                 {statementWords.map((word, idx) => (
                   <span
                     key={`${word}-${idx}`}
-                    className="about-word inline-block mr-[0.25em] mb-[0.08em] opacity-[0.15] text-white will-change-[opacity]"
+                    className="about-word inline-block mr-[0.25em] mb-[0.08em] opacity-20 text-[#111111] will-change-[opacity]"
                   >
                     {word}
                   </span>
@@ -278,12 +259,12 @@ export default function About() {
             </div>
 
             {/* Editorial Subtitle / Mission */}
-            <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row gap-6 justify-between items-start text-neutral-400 font-sans text-sm sm:text-base leading-relaxed">
+            <div className="mt-8 pt-8 border-t border-[rgba(17,17,17,0.10)] flex flex-col sm:flex-row gap-6 justify-between items-start text-[#6B6B6B] font-sans text-sm sm:text-base leading-relaxed">
               <p className="max-w-xl">
                 Bridging distributed cloud systems, real-time message brokers,
                 and high-fidelity client experiences with uncompromised engineering rigor.
               </p>
-              <div className="font-mono text-xs uppercase tracking-widest text-neutral-500 shrink-0">
+              <div className="font-mono text-xs uppercase tracking-widest text-[#6B6B6B] shrink-0">
                 [ 2020 — PRESENT ]
               </div>
             </div>
@@ -294,7 +275,7 @@ export default function About() {
             <div className="relative w-full max-w-sm sm:max-w-md">
               {/* Rotating Circular Text Badge */}
               <div className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8 z-30 pointer-events-none select-none">
-                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-[#0a0a0a]/90 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-2xl">
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-white/95 border border-[rgba(17,17,17,0.12)] flex items-center justify-center shadow-xl">
                   {/* Rotating SVG text */}
                   <svg
                     viewBox="0 0 120 120"
@@ -305,7 +286,7 @@ export default function About() {
                       d="M 60, 60 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0"
                       fill="none"
                     />
-                    <text className="text-[9px] uppercase font-mono tracking-[0.24em] fill-neutral-300 font-semibold">
+                    <text className="text-[9px] uppercase font-mono tracking-[0.24em] fill-[#111111] font-semibold">
                       <textPath href="#aboutBadgePath">
                         {ABOUT_DATA.photo.badgeText}
                       </textPath>
@@ -314,8 +295,8 @@ export default function About() {
 
                   {/* Glowing Status Center Dot */}
                   <div className="absolute flex items-center justify-center">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-                    <span className="absolute w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping opacity-60" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D00] shadow-[0_0_12px_rgba(255,77,0,0.5)]" />
+                    <span className="absolute w-2.5 h-2.5 rounded-full bg-[#FF4D00] animate-ping opacity-60" />
                   </div>
                 </div>
               </div>
@@ -323,7 +304,7 @@ export default function About() {
               {/* Photo Frame Container */}
               <div
                 ref={photoFrameRef}
-                className="relative aspect-[3/4] w-full rounded-sm overflow-hidden bg-neutral-900 border border-white/10 shadow-2xl group"
+                className="relative aspect-[3/4] w-full rounded-[24px] overflow-hidden bg-[#111111] border border-[rgba(17,17,17,0.10)] shadow-[0_24px_50px_rgba(17,17,17,0.12)] group"
               >
                 {/* Parallax Image Wrapper */}
                 <div
@@ -377,30 +358,30 @@ export default function About() {
           {/* Thin Horizontal Divider (draws in from left) */}
           <div
             ref={topDividerRef}
-            className="w-full h-[1px] bg-white/10 origin-left mb-12 sm:mb-16 will-change-transform"
+            className="w-full h-[1px] bg-[rgba(17,17,17,0.10)] origin-left mb-12 sm:mb-16 will-change-transform"
           />
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative">
             {ABOUT_DATA.stats.map((stat, idx) => (
               <div
                 key={stat.id}
-                className="glass p-5 sm:p-6 md:p-8 rounded-2xl flex flex-col justify-between"
+                className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm p-5 sm:p-6 md:p-8 rounded-2xl flex flex-col justify-between"
               >
                 {/* Thin Vertical Divider (Desktop, draws in from top) */}
                 {idx > 0 && (
                   <div
-                    className="stat-divider-vert hidden lg:block absolute left-0 top-0 bottom-0 w-[1px] bg-white/10 origin-top will-change-transform"
+                    className="stat-divider-vert hidden lg:block absolute left-0 top-0 bottom-0 w-[1px] bg-[rgba(17,17,17,0.10)] origin-top will-change-transform"
                     aria-hidden="true"
                   />
                 )}
 
                 <div>
-                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 block mb-2">
+                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B] block mb-2">
                     0{idx + 1} {"// METRIC"}
                   </span>
 
                   {/* Huge Numerals */}
-                  <div className="font-anton uppercase text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white mb-2 leading-none">
+                  <div className="font-anton uppercase text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-[#111111] mb-2 leading-none">
                     <StatCounter
                       value={stat.value}
                       suffix={stat.suffix}
@@ -409,11 +390,11 @@ export default function About() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-white/5">
-                  <div className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] text-white/90 font-medium">
+                <div className="mt-4 pt-3 border-t border-[rgba(17,17,17,0.08)]">
+                  <div className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] text-[#111111] font-semibold">
                     {stat.label}
                   </div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 mt-1">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#6B6B6B] mt-1">
                     {stat.detail}
                   </div>
                 </div>
@@ -425,41 +406,41 @@ export default function About() {
         {/* "How I Work" List with Hover Dim-Siblings Effect */}
         <div className="relative pt-8">
           <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-8">
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+            <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
               {"// METHODOLOGY & WORK PRINCIPLES"}
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-500">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B6B6B]">
               HOVER TO INSPECT
             </span>
           </div>
 
           {/* Group container for hover dim-siblings effect */}
-          <div className="group/list flex flex-col divide-y divide-white/10 border-t border-b border-white/10">
+          <div className="group/list flex flex-col divide-y divide-[rgba(17,17,17,0.10)] border-t border-b border-[rgba(17,17,17,0.10)]">
             {ABOUT_DATA.principles.map((item) => (
               <div
                 key={item.id}
-                className="group/item relative py-8 sm:py-10 lg:py-12 px-3 sm:px-6 transition-all duration-300 group-hover/list:opacity-30 hover:!opacity-100 hover:bg-white/[0.02] cursor-pointer"
+                className="group/item relative py-8 sm:py-10 lg:py-12 px-3 sm:px-6 transition-all duration-300 group-hover/list:opacity-35 hover:!opacity-100 hover:bg-black/[0.02] cursor-pointer"
                 data-cursor="hover"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                   {/* Left: Prefix & Title */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-4 sm:gap-8">
-                    <span className="font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-neutral-400 group-hover/item:text-emerald-400 transition-colors shrink-0">
+                    <span className="font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-[#6B6B6B] group-hover/item:text-[#C43A00] transition-colors shrink-0">
                       {item.prefix}
                     </span>
 
-                    <h3 className="font-anton uppercase text-2xl sm:text-3xl md:text-4xl tracking-tight text-white group-hover/item:translate-x-2 transition-transform duration-300">
+                    <h3 className="font-anton uppercase text-2xl sm:text-3xl md:text-4xl tracking-tight text-[#111111] group-hover/item:translate-x-2 transition-transform duration-300">
                       {item.title}
                     </h3>
                   </div>
 
                   {/* Right: Description & Arrow */}
                   <div className="flex items-center justify-between lg:justify-end gap-6 lg:max-w-md xl:max-w-lg">
-                    <p className="font-sans text-xs sm:text-sm text-neutral-400 leading-relaxed group-hover/item:text-neutral-200 transition-colors">
+                    <p className="font-sans text-xs sm:text-sm text-[#6B6B6B] leading-relaxed group-hover/item:text-[#111111] transition-colors">
                       {item.description}
                     </p>
 
-                    <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center shrink-0 group-hover/item:border-white group-hover/item:bg-white group-hover/item:text-black transition-all duration-300 text-xs">
+                    <div className="w-8 h-8 rounded-full border border-[rgba(17,17,17,0.20)] flex items-center justify-center shrink-0 group-hover/item:border-[#FF4D00] group-hover/item:bg-[#FF4D00] group-hover/item:text-[#111111] transition-all duration-300 text-xs text-[#111111]">
                       <span className="inline-block transition-transform duration-300 group-hover/item:rotate-45">
                         →
                       </span>

@@ -232,7 +232,7 @@ export default function VoxMetricVisual({
       {/* ================= LAYER 3: Foreground Depth - Floating Trace Card & Badges ================= */}
       <div ref={foregroundLayerRef} className="absolute inset-0 p-6 flex flex-col justify-end pointer-events-none z-20 will-change-transform">
         {/* Distributed Trace Flamegraph Card with Count-Up Numbers */}
-        <div className="w-full p-2.5 rounded-xl bg-black/85 border border-white/10 backdrop-blur-md space-y-1.5 shadow-xl">
+        <div className="w-full p-2.5 rounded-xl bg-black/85 border border-white/10  space-y-1.5 shadow-xl">
           <div className="flex items-center justify-between font-mono text-[9px] text-neutral-400">
             <span>DISTRIBUTED SPAN TRACE</span>
             <span className="text-amber-400 font-bold">&lt; 0.1% ANOMALY</span>
@@ -276,7 +276,7 @@ export default function VoxMetricVisual({
       />
 
       {/* Bottom-Right Badge inside the card with padding */}
-      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
+      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80  border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
         <span>CLICK TO INSPECT</span>
         <span className="text-amber-400 font-bold">↗</span>
       </div>

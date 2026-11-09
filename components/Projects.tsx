@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { INITIAL_PROJECTS, LiveProject } from "@/data/projects";
-import { useSmoothScroll } from "./SmoothScroll";
+import { useSmoothScroll, debouncedScrollTriggerRefresh } from "./SmoothScroll";
 import CaseStudyModal from "./CaseStudyModal";
 import GlassMockBrowser from "./GlassMockBrowser";
 
@@ -76,8 +76,6 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<LiveProject | null>(null);
   const [isNavVisible, setIsNavVisible] = useState(false);
 
-  const activeProject = projects[activeProjectIndex] || projects[0];
-
   // Fetch real-time live project data from server-only API endpoint
   useEffect(() => {
     let isMounted = true;
@@ -93,10 +91,8 @@ export default function Projects() {
             data.projects.length > 0
           ) {
             setProjects(data.projects);
-            // Refresh ScrollTrigger calculations after live data updates
-            setTimeout(() => {
-              ScrollTrigger.refresh();
-            }, 150);
+            // Refresh ScrollTrigger calculations smoothly with debouncing
+            debouncedScrollTriggerRefresh(150);
           }
         }
       } catch (err) {
@@ -130,21 +126,26 @@ export default function Projects() {
       onToggle: (self) => setIsNavVisible(self.isActive),
     });
 
-    // Slow mouse parallax on giant background number
+    // Optimized mouse parallax on giant background number using quickTo
+    const giantEl = giantNumberWrapperRef.current;
+    let xTo: ((v: number) => void) | null = null;
+    let yTo: ((v: number) => void) | null = null;
+    if (giantEl) {
+      xTo = gsap.quickTo(giantEl, "x", { duration: 0.6, ease: "power2.out" });
+      yTo = gsap.quickTo(giantEl, "y", { duration: 0.6, ease: "power2.out" });
+    }
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (!giantNumberWrapperRef.current) return;
+      if (!xTo || !yTo) return;
       const xNorm = e.clientX / window.innerWidth - 0.5;
       const yNorm = e.clientY / window.innerHeight - 0.5;
-      gsap.to(giantNumberWrapperRef.current, {
-        x: xNorm * -35,
-        y: yNorm * -35,
-        duration: 0.8,
-        ease: "power2.out",
-        overwrite: "auto",
-      });
+      xTo(xNorm * -35);
+      yTo(yNorm * -35);
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    const activeIndexRef = { current: 0 };
 
     const mm = gsap.matchMedia();
 
@@ -224,60 +225,43 @@ export default function Projects() {
           onUpdate: (self) => {
             const p = self.progress;
 
-            // Update bottom full-width progress line
+            // Update bottom full-width progress line directly via CSS transform
             if (bottomProgressBarRef.current) {
-              gsap.set(bottomProgressBarRef.current, { scaleX: p });
+              bottomProgressBarRef.current.style.transform = `scaleX(${p})`;
             }
 
             const idx = Math.min(
               projects.length - 1,
               Math.floor(p * projects.length + 0.15)
             );
-            setActiveProjectIndex(idx);
 
-            // Enforce strictly one counter visible; kill stale tweens
-            projects.forEach((_, k) => {
-              const el = counterNumberRefs.current[k];
-              if (!el) return;
-              if (k === idx) {
-                gsap.to(el, {
-                  autoAlpha: 1,
-                  yPercent: 0,
-                  duration: 0.35,
-                  ease: "power2.out",
-                  overwrite: true,
-                });
-              } else if (k < idx) {
-                gsap.to(el, {
-                  autoAlpha: 0,
-                  yPercent: -100,
-                  duration: 0.35,
-                  ease: "power2.out",
-                  overwrite: true,
-                });
-              } else {
-                gsap.to(el, {
-                  autoAlpha: 0,
-                  yPercent: 100,
-                  duration: 0.35,
-                  ease: "power2.out",
-                  overwrite: true,
-                });
-              }
-            });
+            // Only trigger state updates and transitions when active index ACTUALLY changes
+            if (idx !== activeIndexRef.current) {
+              activeIndexRef.current = idx;
+              setActiveProjectIndex(idx);
 
-            // Sync giant background number
-            projects.forEach((_, k) => {
-              const gEl = giantNumberRefs.current[k];
-              if (!gEl) return;
-              if (k === idx) {
-                gsap.to(gEl, { autoAlpha: 1, yPercent: 0, duration: 0.4, overwrite: true });
-              } else if (k < idx) {
-                gsap.to(gEl, { autoAlpha: 0, yPercent: -50, duration: 0.4, overwrite: true });
-              } else {
-                gsap.to(gEl, { autoAlpha: 0, yPercent: 50, duration: 0.4, overwrite: true });
-              }
-            });
+              projects.forEach((_, k) => {
+                const el = counterNumberRefs.current[k];
+                if (el) {
+                  gsap.to(el, {
+                    autoAlpha: k === idx ? 1 : 0,
+                    yPercent: k === idx ? 0 : k < idx ? -100 : 100,
+                    duration: 0.35,
+                    ease: "power2.out",
+                    overwrite: true,
+                  });
+                }
+                const gEl = giantNumberRefs.current[k];
+                if (gEl) {
+                  gsap.to(gEl, {
+                    autoAlpha: k === idx ? 1 : 0,
+                    yPercent: k === idx ? 0 : k < idx ? -50 : 50,
+                    duration: 0.4,
+                    overwrite: true,
+                  });
+                }
+              });
+            }
           },
         },
       });
@@ -509,31 +493,16 @@ export default function Projects() {
       <section
         ref={sectionRef}
         id="work"
-        className="relative w-full min-h-screen bg-[#0a0a0a] text-white font-sans overflow-hidden select-none"
+        className="relative w-full min-h-screen bg-[#F5F3EE] text-[#111111] font-sans overflow-hidden select-none"
       >
         {/* =========================================================================
-            BACKGROUND LAYERS: Cross-fading Accent Glow + Faint Outlined Parallax Number
+            BACKGROUND LAYERS: Faint Outlined Parallax Number
             ========================================================================= */}
-        {/* Per-project accent radial glows that cross-fade */}
-        {projects.map((proj, idx) => (
-          <div
-            key={proj.index}
-            ref={(el) => {
-              bgGlowRefs.current[idx] = el;
-            }}
-            className="absolute right-1/4 top-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full blur-[160px] pointer-events-none -z-10 will-change-transform transition-colors duration-700"
-            style={{
-              backgroundColor: proj.accent,
-              opacity: idx === 0 ? 0.22 : 0,
-            }}
-          />
-        ))}
-
         {/* Faint Huge Outlined Project Number with Slow Mouse/Scroll Parallax */}
         <div
           ref={giantNumberWrapperRef}
           aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none -z-10 overflow-hidden w-full flex items-center justify-center opacity-[0.06] will-change-transform"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none -z-10 overflow-hidden w-full flex items-center justify-center opacity-[0.08] will-change-transform"
         >
           <div className="relative h-[clamp(18rem,34vw,36rem)] w-[clamp(24rem,44vw,48rem)] flex items-center justify-center">
             {projects.map((proj, idx) => (
@@ -544,7 +513,7 @@ export default function Projects() {
                 }}
                 className="absolute inset-0 flex items-center justify-center font-anton text-[clamp(18rem,34vw,36rem)] leading-none will-change-transform"
                 style={{
-                  WebkitTextStroke: "2.5px rgba(255, 255, 255, 0.8)",
+                  WebkitTextStroke: "2px rgba(17, 17, 17, 0.9)",
                   color: "transparent",
                 }}
               >
@@ -554,21 +523,18 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Ambient Grid Watermark Lines */}
-        <div className="absolute inset-0 pointer-events-none flex justify-between max-w-[1920px] mx-auto px-6 md:px-12 lg:px-16 opacity-5">
-          <div className="w-[1px] h-full bg-white/30" />
-          <div className="w-[1px] h-full bg-white/30 hidden md:block" />
-          <div className="w-[1px] h-full bg-white/30 hidden lg:block" />
-          <div className="w-[1px] h-full bg-white/30" />
+        {/* Ambient Grid Watermark Lines (4% Opacity) */}
+        <div className="absolute inset-0 pointer-events-none flex justify-between max-w-[1920px] mx-auto px-6 md:px-12 lg:px-16 opacity-40">
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.04)]" />
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.04)] hidden md:block" />
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.04)] hidden lg:block" />
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.04)]" />
         </div>
 
         {/* Top-Right Live Sync Status Pill */}
         {isLoading && (
-          <div className="absolute top-24 right-8 md:right-12 lg:right-16 z-30 flex items-center gap-2 font-mono text-[10px] sm:text-[11px] tracking-widest uppercase text-neutral-400 glass px-3.5 py-1.5 rounded-full border border-white/10 bg-black/40">
-            <span
-              className="w-2 h-2 rounded-full animate-ping"
-              style={{ backgroundColor: activeProject.accent }}
-            />
+          <div className="absolute top-24 right-8 md:right-12 lg:right-16 z-30 flex items-center gap-2 font-mono text-[10px] sm:text-[11px] tracking-widest uppercase text-[#6B6B6B] glass px-3.5 py-1.5 rounded-full border border-[rgba(17,17,17,0.10)] bg-white/60">
+            <span className="w-2 h-2 rounded-full animate-ping bg-[#FF4D00]" />
             <span>SYNCING TELEMETRY...</span>
           </div>
         )}
@@ -577,12 +543,9 @@ export default function Projects() {
             DESKTOP PINNED VIEW: Vertically centered (h-screen, items-center, pt-24 pb-24)
             ========================================================================= */}
         <div className="hidden lg:flex relative w-full h-screen items-center pt-24 pb-24">
-          {/* Shared Top Counter (Masked with one absolutely-positioned element per number) */}
-          <div className="absolute top-24 left-8 md:left-12 lg:left-16 z-30 flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.25em] text-neutral-400 pointer-events-none">
-            <span
-              className="w-2 h-2 rounded-full transition-colors duration-500"
-              style={{ backgroundColor: activeProject.accent }}
-            />
+          {/* Shared Top Counter */}
+          <div className="absolute top-24 left-8 md:left-12 lg:left-16 z-30 flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.25em] text-[#6B6B6B] pointer-events-none">
+            <span className="w-2 h-2 rounded-full bg-[#FF4D00]" />
             {/* Overflow-hidden mask for single active number */}
             <div className="relative h-5 w-7 overflow-hidden">
               {projects.map((proj, pIdx) => (
@@ -591,7 +554,7 @@ export default function Projects() {
                   ref={(el) => {
                     counterNumberRefs.current[pIdx] = el;
                   }}
-                  className="absolute inset-0 flex items-center font-bold text-white will-change-transform"
+                  className="absolute inset-0 flex items-center font-bold text-[#111111] will-change-transform"
                 >
                   {proj.index}
                 </span>
@@ -612,28 +575,22 @@ export default function Projects() {
               {/* Left Column: Info, Status Badge, Title, Summary, Tags, Action Buttons */}
               <div className="w-full lg:w-5/12 xl:w-1/2 flex flex-col justify-center pr-6 lg:pr-12 z-20">
                 {/* Live Status Badge */}
-                <div className="flex items-center gap-2.5 mb-3 font-mono text-xs uppercase tracking-[0.22em] text-neutral-300">
+                <div className="flex items-center gap-2.5 mb-3 font-mono text-xs uppercase tracking-[0.22em] text-[#6B6B6B]">
                   <span className="relative flex h-2 w-2">
-                    <span
-                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                      style={{ backgroundColor: project.accent }}
-                    />
-                    <span
-                      className="relative inline-flex rounded-full h-2 w-2"
-                      style={{ backgroundColor: project.accent }}
-                    />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-[#FF4D00]" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF4D00]" />
                   </span>
-                  <span className="font-semibold text-white">
+                  <span className="font-semibold text-[#111111]">
                     ● {project.status || "LIVE"}
                   </span>
-                  <span className="text-neutral-500">·</span>
-                  <span className="text-neutral-400">
+                  <span className="text-[#6B6B6B]/40">·</span>
+                  <span className="text-[#6B6B6B]">
                     deployed {formatDeployedTime(project.deployedAt)}
                   </span>
                 </div>
 
                 {/* Split-Letter Title Reveal */}
-                <h2 className="font-anton uppercase tracking-[-0.02em] text-[clamp(3.5rem,6.2vw,6.8rem)] leading-[0.88] text-white my-1 flex flex-wrap">
+                <h2 className="font-anton uppercase tracking-[-0.02em] text-[clamp(3.5rem,6.2vw,6.8rem)] leading-[0.88] text-[#111111] my-1 flex flex-wrap">
                   {project.title.split("").map((char, cIdx) => (
                     <span key={cIdx} className="inline-block overflow-hidden py-1">
                       <span
@@ -657,11 +614,11 @@ export default function Projects() {
                   className="flex flex-col"
                 >
                   {/* 2-3 Line Plain-English Summary */}
-                  <p className="text-neutral-300 font-sans text-base sm:text-lg leading-relaxed max-w-xl mt-4 mb-6">
+                  <p className="text-[#6B6B6B] font-sans text-base sm:text-lg leading-relaxed max-w-xl mt-4 mb-6">
                     {project.summary}
                   </p>
 
-                  {/* Tech Pills (Slide in one by one) */}
+                  {/* Tech Pills - Thin 1px borders instead of filled pills */}
                   <div className="flex flex-wrap gap-2.5 mb-8">
                     {(project.techTags || project.tags || []).map((tag, tIdx) => (
                       <span
@@ -670,35 +627,25 @@ export default function Projects() {
                           if (!pillsRefs.current[idx]) pillsRefs.current[idx] = [];
                           pillsRefs.current[idx][tIdx] = el;
                         }}
-                        className="glass !rounded-full px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors duration-500 will-change-transform"
-                        style={{
-                          backgroundColor: `${project.accent}14`,
-                          borderColor: `${project.accent}45`,
-                          color: project.accent,
-                        }}
+                        className="rounded-full px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider border border-[rgba(17,17,17,0.12)] bg-white/70 text-[#111111] will-change-transform shadow-sm"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  {/* Action Buttons: "VISIT LIVE ↗" and "VIEW CODE ↗" */}
+                  {/* Action Buttons: Primary CTA in #FF4D00, Secondary in Outline */}
                   <div className="flex flex-wrap items-center gap-3.5">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="glass group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.2em] font-semibold text-white transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
-                        style={{
-                          backgroundColor: `${project.accent}20`,
-                          borderColor: `${project.accent}55`,
-                          boxShadow: `0 0 20px ${project.accent}25`,
-                        }}
+                        className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.2em] font-semibold text-[#111111] bg-[#FF4D00] hover:bg-[#E04400] transition-all duration-200 shadow-sm hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                         data-cursor="hover"
                       >
                         <span>VISIT LIVE</span>
-                        <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                           ↗
                         </span>
                       </a>
@@ -709,17 +656,17 @@ export default function Projects() {
                         href={project.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="glass group inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.2em] text-neutral-300 hover:text-white transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] border border-white/15 hover:border-white/40 cursor-pointer"
+                        className="group inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-[0.2em] text-[#111111] bg-white border border-[rgba(17,17,17,0.15)] hover:border-[#111111] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-sm"
                         data-cursor="hover"
                       >
                         <svg
-                          className="w-3.5 h-3.5 fill-current text-white/80 group-hover:text-white"
+                          className="w-3.5 h-3.5 fill-current text-[#111111]"
                           viewBox="0 0 24 24"
                         >
                           <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
                         </svg>
                         <span>VIEW CODE</span>
-                        <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                           ↗
                         </span>
                       </a>
@@ -727,13 +674,13 @@ export default function Projects() {
 
                     <button
                       onClick={() => setSelectedProject(project)}
-                      className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-2 ml-1"
+                      className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[#6B6B6B] hover:text-[#111111] transition-colors cursor-pointer bg-transparent border-none p-2 ml-1"
                       data-cursor="hover"
                     >
-                      <span className="border-b border-white/20 pb-0.5 group-hover:border-white transition-colors">
+                      <span className="border-b border-[rgba(17,17,17,0.20)] pb-0.5 group-hover:border-[#111111] transition-colors">
                         CASE STUDY
                       </span>
-                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                      <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                         ↗
                       </span>
                     </button>
@@ -741,7 +688,7 @@ export default function Projects() {
                 </div>
               </div>
 
-              {/* Right Column: Visual Container with Quick Accent Color Wipe */}
+              {/* Right Column: Visual Container */}
               <div className="w-full lg:w-7/12 xl:w-1/2 flex items-center justify-center lg:justify-end mr-8 xl:mr-16 z-20 pointer-events-auto relative">
                 {/* Accent Color Sweep Bar across incoming visual on transition */}
                 <div
@@ -750,7 +697,7 @@ export default function Projects() {
                   }}
                   className="absolute inset-0 z-30 pointer-events-none rounded-[22px] will-change-transform"
                   style={{
-                    backgroundColor: project.accent,
+                    backgroundColor: "#FF4D00",
                     clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
                   }}
                 />
@@ -785,7 +732,7 @@ export default function Projects() {
         >
           <div className="relative flex flex-col gap-6 items-end">
             {/* Continuous Vertical Guide Line */}
-            <div className="absolute right-[5px] top-2 bottom-2 w-[1px] bg-white/15 pointer-events-none" />
+            <div className="absolute right-[5px] top-2 bottom-2 w-[1px] bg-[rgba(17,17,17,0.12)] pointer-events-none" />
 
             {projects.map((proj, idx) => {
               const isActive = activeProjectIndex === idx;
@@ -800,12 +747,9 @@ export default function Projects() {
                   <span
                     className={`hidden xl:inline-block font-mono text-[11px] tracking-[0.2em] uppercase transition-all duration-300 ${
                       isActive
-                        ? "opacity-100 font-semibold"
-                        : "opacity-35 group-hover:opacity-80 text-neutral-400"
+                        ? "opacity-100 font-semibold text-[#C43A00]"
+                        : "opacity-40 group-hover:opacity-100 text-[#6B6B6B]"
                     }`}
-                    style={{
-                      color: isActive ? proj.accent : undefined,
-                    }}
                   >
                     {proj.index} {proj.title}
                   </span>
@@ -815,13 +759,9 @@ export default function Projects() {
                     <span
                       className={`rounded-full transition-all duration-300 ${
                         isActive
-                          ? "w-3 h-3"
-                          : "w-1.5 h-1.5 bg-neutral-600 group-hover:bg-white"
+                          ? "w-2.5 h-2.5 bg-[#FF4D00]"
+                          : "w-1.5 h-1.5 bg-[rgba(17,17,17,0.25)] group-hover:bg-[#111111]"
                       }`}
-                      style={{
-                        backgroundColor: isActive ? proj.accent : undefined,
-                        boxShadow: isActive ? `0 0 14px ${proj.accent}` : undefined,
-                      }}
                     />
                   </div>
                 </button>
@@ -834,20 +774,19 @@ export default function Projects() {
             BOTTOM ELEMENTS: Full-Width Progress Line & "SCROLL ↓" Hint
             ========================================================================= */}
         {/* Full-width thin progress line filling with active accent color */}
-        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 z-40 overflow-hidden pointer-events-none">
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[rgba(17,17,17,0.10)] z-40 overflow-hidden pointer-events-none">
           <div
             ref={bottomProgressBarRef}
-            className="h-full w-full origin-left will-change-transform transition-colors duration-500"
+            className="h-full w-full origin-left will-change-transform bg-[#FF4D00]"
             style={{
               transform: "scaleX(0)",
-              backgroundColor: activeProject.accent,
             }}
           />
         </div>
 
         {/* "SCROLL ↓" hint on the first project only */}
         <div
-          className={`hidden lg:flex absolute bottom-6 left-8 md:left-12 lg:left-16 z-30 items-center gap-2.5 font-mono text-xs tracking-[0.25em] uppercase text-neutral-400 transition-all duration-500 pointer-events-none ${
+          className={`hidden lg:flex absolute bottom-6 left-8 md:left-12 lg:left-16 z-30 items-center gap-2.5 font-mono text-xs tracking-[0.25em] uppercase text-[#6B6B6B] transition-all duration-500 pointer-events-none ${
             activeProjectIndex === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
           }`}
         >
@@ -858,7 +797,7 @@ export default function Projects() {
         {/* =========================================================================
             MOBILE VIEW: Normal Vertical Stack (No Pin)
             ========================================================================= */}
-        <div className="flex flex-col lg:hidden w-full divide-y divide-white/10 px-6 py-12">
+        <div className="flex flex-col lg:hidden w-full divide-y divide-[rgba(17,17,17,0.10)] px-6 py-12">
           {projects.map((proj, idx) => (
             <div
               key={proj.index}
@@ -867,27 +806,26 @@ export default function Projects() {
             >
               {/* Info Column */}
               <div className="flex flex-col">
-                <div className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 mb-2 flex items-center gap-2">
+                <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B] mb-2 flex items-center gap-2">
                   <span
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: proj.accent }}
+                    className="w-2 h-2 rounded-full bg-[#FF4D00]"
                   />
                   <span>{proj.index} / 03</span>
-                  <span className="text-neutral-500">·</span>
-                  <span className="font-semibold text-white">
+                  <span className="text-[rgba(17,17,17,0.25)]">·</span>
+                  <span className="font-semibold text-[#111111]">
                     ● {proj.status || "LIVE"}
                   </span>
-                  <span className="text-neutral-500">·</span>
-                  <span className="text-neutral-400">
+                  <span className="text-[rgba(17,17,17,0.25)]">·</span>
+                  <span className="text-[#6B6B6B]">
                     {formatDeployedTime(proj.deployedAt)}
                   </span>
                 </div>
 
-                <h2 className="font-anton uppercase tracking-[-0.02em] text-4xl sm:text-5xl text-white mb-3">
+                <h2 className="font-anton uppercase tracking-[-0.02em] text-4xl sm:text-5xl text-[#111111] mb-3">
                   {proj.title}
                 </h2>
 
-                <p className="text-neutral-300 font-sans text-sm sm:text-base leading-relaxed mb-6">
+                <p className="text-[#6B6B6B] font-sans text-sm sm:text-base leading-relaxed mb-6">
                   {proj.summary}
                 </p>
 
@@ -896,12 +834,7 @@ export default function Projects() {
                   {(proj.techTags || proj.tags || []).map((tag) => (
                     <span
                       key={tag}
-                      className="glass !rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-wider"
-                      style={{
-                        backgroundColor: `${proj.accent}14`,
-                        borderColor: `${proj.accent}45`,
-                        color: proj.accent,
-                      }}
+                      className="px-3 py-1 rounded-full font-mono text-[11px] uppercase tracking-wider bg-white/70 border border-[rgba(17,17,17,0.12)] text-[#111111]"
                     >
                       {tag}
                     </span>
@@ -915,11 +848,7 @@ export default function Projects() {
                       href={proj.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass group relative inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-xs uppercase tracking-[0.2em] font-semibold text-white"
-                      style={{
-                        backgroundColor: `${proj.accent}20`,
-                        borderColor: `${proj.accent}55`,
-                      }}
+                      className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full font-mono text-xs uppercase tracking-[0.2em] font-semibold text-[#111111] bg-[#FF4D00] hover:bg-[#E04400] transition-colors shadow-sm"
                     >
                       <span>VISIT LIVE</span>
                       <span>↗</span>
@@ -931,7 +860,7 @@ export default function Projects() {
                       href={proj.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass group inline-flex items-center gap-2 px-3.5 py-2 rounded-full font-mono text-xs uppercase tracking-[0.2em] text-neutral-300 hover:text-white border border-white/15"
+                      className="group inline-flex items-center gap-2 px-3.5 py-2 rounded-full font-mono text-xs uppercase tracking-[0.2em] text-[#111111] bg-white border border-[rgba(17,17,17,0.15)] hover:border-[#111111] transition-all"
                     >
                       <span>VIEW CODE</span>
                       <span>↗</span>
@@ -940,7 +869,7 @@ export default function Projects() {
 
                   <button
                     onClick={() => setSelectedProject(proj)}
-                    className="font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-white cursor-pointer bg-transparent border-none p-2"
+                    className="font-mono text-xs uppercase tracking-[0.2em] text-[#6B6B6B] hover:text-[#111111] cursor-pointer bg-transparent border-none p-2"
                   >
                     CASE STUDY ↗
                   </button>

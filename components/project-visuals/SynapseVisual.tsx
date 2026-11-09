@@ -266,7 +266,7 @@ export default function SynapseVisual({
         <motion.div
           animate={{ y: [0, -6, 0] }}
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-          className="self-end px-3 py-1.5 rounded-xl bg-black/85 backdrop-blur-md border border-purple-500/30 flex items-center gap-2 shadow-lg"
+          className="self-end px-3 py-1.5 rounded-xl bg-black/85  border border-purple-500/30 flex items-center gap-2 shadow-lg"
         >
           {/* Blinking LIVE dot */}
           <span className="relative flex h-2 w-2">
@@ -283,7 +283,7 @@ export default function SynapseVisual({
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-          className="self-start px-3 py-2 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 flex items-center gap-3 font-mono text-[10px] shadow-lg mb-8"
+          className="self-start px-3 py-2 rounded-xl bg-black/85  border border-white/10 flex items-center gap-3 font-mono text-[10px] shadow-lg mb-8"
         >
           <span className="text-neutral-400">P99 RETRIEVAL:</span>
           <span className="text-purple-400 font-bold">
@@ -302,7 +302,7 @@ export default function SynapseVisual({
       />
 
       {/* Bottom-Right Badge inside the card with padding */}
-      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
+      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80  border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
         <span>CLICK TO INSPECT</span>
         <span className="text-purple-400 font-bold">↗</span>
       </div>

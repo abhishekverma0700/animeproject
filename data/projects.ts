@@ -48,7 +48,7 @@ export const PROJECT_CONFIGS: ProjectConfig[] = [
     title: "ABHIRENT",
     netlifySite: "abhirent",
     githubRepo: "Abhirent",
-    accent: "#38bdf8", // Electric Sky
+    accent: "#FF4D00",
     summaryOverride:
       "Full-stack rental marketplace and equipment reservation platform. Features real-time inventory management, automated scheduling, customer booking flows, and robust edge deployment.",
   },
@@ -57,7 +57,7 @@ export const PROJECT_CONFIGS: ProjectConfig[] = [
     title: "AMALA BIOCEUTICALS",
     netlifySite: "amalabioceuticals",
     githubRepo: "Amalabioceuticals",
-    accent: "#10b981", // Emerald Neon
+    accent: "#FF4D00",
     summaryOverride:
       "Enterprise pharmaceutical commerce and healthcare portal showcasing verified clinical formulations, laboratory batch authentications, and streamlined wholesale distribution inquiries.",
   },
@@ -67,7 +67,7 @@ export const PROJECT_CONFIGS: ProjectConfig[] = [
     netlifySite: "portvia",
     vercelProject: "portvia",
     githubRepo: "portvia",
-    accent: "#a855f7", // Deep Purple
+    accent: "#FF4D00",
     summaryOverride:
       "AI-accelerated developer portfolio builder and digital presence studio that converts GitHub commit streams, deployment telemetry, and verified certifications into interactive showcases.",
   },
@@ -87,7 +87,7 @@ export const INITIAL_PROJECTS: LiveProject[] = [
     deployedAt: "2026-02-27T21:03:41.011Z",
     thumbnail:
       "https://d33wubrfki0l68.cloudfront.net/69a206ad2f26da00084dd10d/screenshot_2026-02-27-21-03-55-0000.webp",
-    accent: "#38bdf8",
+    accent: "#FF4D00",
     matchedResource: {
       provider: "netlify",
       siteName: "abhirent",
@@ -126,7 +126,7 @@ export const INITIAL_PROJECTS: LiveProject[] = [
     deployedAt: "2026-02-21T16:00:40.583Z",
     thumbnail:
       "https://d33wubrfki0l68.cloudfront.net/6999d6a88900220008fab7af/screenshot_2026-02-21-16-00-53-0000.webp",
-    accent: "#10b981",
+    accent: "#FF4D00",
     matchedResource: {
       provider: "netlify",
       siteName: "amalabioceuticals",
@@ -165,7 +165,7 @@ export const INITIAL_PROJECTS: LiveProject[] = [
     deployedAt: "2025-12-20T13:35:16.830Z",
     thumbnail:
       "https://d33wubrfki0l68.cloudfront.net/6946a614f0295b00082c7383/screenshot_2025-12-20-13-35-46-0000.webp",
-    accent: "#a855f7",
+    accent: "#FF4D00",
     matchedResource: {
       provider: "netlify",
       siteName: "portvia",

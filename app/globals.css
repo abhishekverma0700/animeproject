@@ -3,46 +3,53 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --accent: #38bdf8;
+  --bg: #F5F3EE;
+  --surface: #FFFFFF;
+  --border: rgba(17, 17, 17, 0.10);
+  --text: #111111;
+  --muted: #6B6B6B;
+  --accent: #FF4D00;
+  --accent-text: #C43A00;
+  --accent-contrast: #111111;
 
-  /* Shared Glassmorphism Design Tokens */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.10);
-  --glass-blur: 16px;
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --background: #F5F3EE;
+  --foreground: #111111;
+
+  /* Glass for light theme */
+  --glass-bg: rgba(255, 255, 255, 0.60);
+  --glass-border: rgba(17, 17, 17, 0.10);
+  --glass-blur: 12px;
+  --glass-shadow: 0 8px 30px rgba(17, 17, 17, 0.06);
 }
 
-/* Limit blur to 12px on mobile devices for optimal rendering performance */
 @media (max-width: 768px) {
   :root {
-    --glass-blur: 12px;
+    --glass-blur: 8px;
   }
 }
 
 html {
-  background-color: #0a0a0a;
-  color: #ffffff;
+  background-color: #F5F3EE;
+  color: #111111;
   scroll-behavior: initial;
 }
 
 body {
-  color: #ffffff;
-  background-color: #0a0a0a;
+  color: #111111;
+  background-color: #F5F3EE;
   overflow-x: hidden;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Accent Selection Color */
+/* Single Accent Selection Color */
 ::selection {
-  background-color: #38bdf8;
-  color: #0a0a0a;
+  background-color: #FF4D00;
+  color: #111111;
 }
 
 /* High-contrast focus-visible rings for keyboard accessibility */
 :where(a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline: 2px solid #38bdf8 !important;
+  outline: 2px solid #FF4D00 !important;
   outline-offset: 3px !important;
 }
 
@@ -53,32 +60,32 @@ body {
   }
 }
 
-/* Custom Thin Scrollbar */
+/* Custom Thin Scrollbar for Light Theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #F5F3EE;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(17, 17, 17, 0.16);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(17, 17, 17, 0.28);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) #0a0a0a;
+  scrollbar-color: rgba(17, 17, 17, 0.16) #F5F3EE;
 }
 
-/* Smooth transitions for interactive elements */
+/* Transitions restricted strictly to transform/opacity/colors */
 a, button, [role="button"], input, textarea, select {
-  transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease, opacity 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, opacity 150ms ease, transform 150ms ease;
 }
 
-/* Consistent link hover underline animation */
+/* Consistent link hover underline animation with accent color */
 .link-underline {
   position: relative;
   display: inline-block;
@@ -90,11 +97,11 @@ a, button, [role="button"], input, textarea, select {
   left: 0;
   bottom: -2px;
   width: 100%;
-  height: 1px;
-  background: currentColor;
+  height: 1.5px;
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .link-underline:hover::after {
   transform: scaleX(1);
@@ -102,66 +109,49 @@ a, button, [role="button"], input, textarea, select {
 }
 
 /* ==============================================================================
-   REUSABLE GLASS SYSTEM
+   REUSABLE GLASS SYSTEM - Clean Minimal Light Glass
    ============================================================================== */
 .glass {
-  --mx: 50%;
-  --my: 50%;
   position: relative;
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: var(--glass-radius, 20px);
   box-shadow: var(--glass-shadow);
-  transition: box-shadow 200ms ease, border-color 200ms ease, background-color 200ms ease;
-}
-
-/* Faint top-left gradient highlight + subtle noise overlay (2.5% opacity) */
-.glass::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 35%, transparent 70%),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Interactive cursor-following gradient border */
-.glass::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: radial-gradient(350px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.35), transparent 70%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 250ms ease;
-  z-index: 2;
-}
-
-/* Reveal cursor-following border and soft inner glow on hover */
-.glass:hover::after {
-  opacity: 1;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 
 .glass:hover {
-  box-shadow: var(--glass-shadow), inset 0 0 24px rgba(255, 255, 255, 0.06);
+  border-color: rgba(17, 17, 17, 0.18);
+  box-shadow: 0 12px 36px rgba(17, 17, 17, 0.08);
 }
 
-/* Fallback for browsers that do not support backdrop-filter */
+/* Solid panel on white surface */
+.solid-panel {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(17, 17, 17, 0.04);
+}
+
+/* Fallback for browsers without backdrop-filter */
 @supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
   .glass {
-    background: rgba(20, 20, 20, 0.85) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #FFFFFF !important;
   }
+}
+
+/* Lite Mode override (low hardware or sustained low FPS) */
+.lite-mode .glass {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: #FFFFFF !important;
+}
+
+.lite-mode .grain-overlay {
+  display: none !important;
 }
 
 /* Respect prefers-reduced-transparency */
@@ -169,20 +159,18 @@ a, button, [role="button"], input, textarea, select {
   .glass {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(18, 18, 18, 0.95) !important;
+    background: #FFFFFF !important;
   }
 }
 
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .glass,
-  .glass::before,
-  .glass::after {
+  .glass {
     transition: none !important;
   }
 }
 
-/* Subtle Film Grain Overlay */
+/* Barely visible paper noise overlay (capped strictly at 1.5% opacity) */
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -190,39 +178,41 @@ a, button, [role="button"], input, textarea, select {
   height: 100vh;
   pointer-events: none;
   z-index: 50;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  background-image: url("/grain.png");
+  background-repeat: repeat;
+  transform: translateZ(0);
 }
 
-/* Photo Edge Fade CSS Mask - fading all 4 edges to transparent */
+/* Photo Edge Fade CSS Mask */
 .hero-image-mask {
   -webkit-mask-image:
-    radial-gradient(ellipse 75% 80% at 50% 50%, #000000 35%, transparent 100%),
+    radial-gradient(ellipse 75% 80% at 50% 50%, #000000 45%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, #000000 12%, #000000 85%, transparent 100%),
     linear-gradient(to right, transparent 0%, #000000 12%, #000000 85%, transparent 100%);
   mask-image:
-    radial-gradient(ellipse 75% 80% at 50% 50%, #000000 35%, transparent 100%),
+    radial-gradient(ellipse 75% 80% at 50% 50%, #000000 45%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, #000000 12%, #000000 85%, transparent 100%),
     linear-gradient(to right, transparent 0%, #000000 12%, #000000 85%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-composite: intersect;
 }
 
-/* Editorial Outlined Text Stroke */
+/* Editorial Outlined Text Stroke in Dark --text */
 .text-stroke-editorial {
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.7);
+  -webkit-text-stroke: 1.5px rgba(17, 17, 17, 0.85);
 }
 
 @media (min-width: 768px) {
   .text-stroke-editorial {
-    -webkit-text-stroke: 2px rgba(255, 255, 255, 0.75);
+    -webkit-text-stroke: 2px rgba(17, 17, 17, 0.9);
   }
 }
 
 .text-stroke-marquee {
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.28);
+  -webkit-text-stroke: 1px rgba(17, 17, 17, 0.22);
 }
 
 .text-stroke-marquee:hover {
-  -webkit-text-stroke: 1px #ffffff;
+  -webkit-text-stroke: 1px #111111;
 }

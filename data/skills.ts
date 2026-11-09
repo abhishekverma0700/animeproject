@@ -31,7 +31,7 @@ export const SKILLS_DATA: SkillsSectionData = {
       id: "frontend",
       number: "01",
       title: "FRONTEND",
-      accent: "#38bdf8",
+      accent: "#FF4D00",
       skills: [
         {
           id: "nextjs",
@@ -69,7 +69,7 @@ export const SKILLS_DATA: SkillsSectionData = {
       id: "backend",
       number: "02",
       title: "BACKEND",
-      accent: "#34d399",
+      accent: "#FF4D00",
       skills: [
         {
           id: "nestjs",
@@ -107,7 +107,7 @@ export const SKILLS_DATA: SkillsSectionData = {
       id: "cloud",
       number: "03",
       title: "CLOUD & DEVOPS",
-      accent: "#a78bfa",
+      accent: "#FF4D00",
       skills: [
         {
           id: "aws-ecs",
@@ -145,7 +145,7 @@ export const SKILLS_DATA: SkillsSectionData = {
       id: "tools",
       number: "04",
       title: "TOOLS & AI",
-      accent: "#fbbf24",
+      accent: "#FF4D00",
       skills: [
         {
           id: "claude-code",

@@ -23,13 +23,13 @@ function SmartChipGlyph() {
       className="shrink-0 opacity-80"
       aria-hidden="true"
     >
-      <rect x="0.5" y="0.5" width="29" height="21" rx="3.5" fill="#181818" stroke="#4a4a4a" strokeWidth="1" />
-      <rect x="7.5" y="5" width="15" height="12" rx="1.5" stroke="#666666" strokeWidth="0.8" />
-      <line x1="7.5" y1="11" x2="22.5" y2="11" stroke="#666666" strokeWidth="0.8" />
-      <line x1="15" y1="0.5" x2="15" y2="5" stroke="#666666" strokeWidth="0.8" />
-      <line x1="15" y1="17" x2="15" y2="21.5" stroke="#666666" strokeWidth="0.8" />
-      <line x1="0.5" y1="11" x2="7.5" y2="11" stroke="#666666" strokeWidth="0.8" />
-      <line x1="22.5" y1="11" x2="29.5" y2="11" stroke="#666666" strokeWidth="0.8" />
+      <rect x="0.5" y="0.5" width="29" height="21" rx="3.5" fill="#F5F3EE" stroke="rgba(17,17,17,0.2)" strokeWidth="1" />
+      <rect x="7.5" y="5" width="15" height="12" rx="1.5" stroke="rgba(17,17,17,0.35)" strokeWidth="0.8" />
+      <line x1="7.5" y1="11" x2="22.5" y2="11" stroke="rgba(17,17,17,0.35)" strokeWidth="0.8" />
+      <line x1="15" y1="0.5" x2="15" y2="5" stroke="rgba(17,17,17,0.35)" strokeWidth="0.8" />
+      <line x1="15" y1="17" x2="15" y2="21.5" stroke="rgba(17,17,17,0.35)" strokeWidth="0.8" />
+      <line x1="0.5" y1="11" x2="7.5" y2="11" stroke="rgba(17,17,17,0.35)" strokeWidth="0.8" />
+      <line x1="22.5" y1="11" x2="29.5" y2="11" stroke="rgba(17,17,17,0.35)" strokeWidth="0.8" />
     </svg>
   );
 }
@@ -46,20 +46,20 @@ function QrMatrixGlyph() {
       className="shrink-0 opacity-75"
       aria-hidden="true"
     >
-      <rect x="0.5" y="0.5" width="37" height="37" rx="4" fill="#0b0b0b" stroke="rgba(255,255,255,0.18)" />
-      <rect x="4" y="4" width="10" height="10" fill="none" stroke="white" strokeWidth="1.5" />
-      <rect x="6.5" y="6.5" width="5" height="5" fill="white" />
-      <rect x="24" y="4" width="10" height="10" fill="none" stroke="white" strokeWidth="1.5" />
-      <rect x="26.5" y="6.5" width="5" height="5" fill="white" />
-      <rect x="4" y="24" width="10" height="10" fill="none" stroke="white" strokeWidth="1.5" />
-      <rect x="6.5" y="26.5" width="5" height="5" fill="white" />
-      <rect x="17" y="5" width="3" height="3" fill="white" opacity="0.9" />
-      <rect x="17" y="11" width="3" height="3" fill="white" opacity="0.6" />
-      <rect x="17" y="17" width="3" height="3" fill="white" opacity="0.9" />
-      <rect x="24" y="17" width="3" height="3" fill="white" opacity="0.75" />
-      <rect x="30" y="22" width="3" height="3" fill="white" opacity="0.85" />
-      <rect x="17" y="29" width="3" height="3" fill="white" opacity="0.7" />
-      <rect x="23" y="29" width="3" height="3" fill="white" opacity="0.85" />
+      <rect x="0.5" y="0.5" width="37" height="37" rx="4" fill="#FFFFFF" stroke="rgba(17,17,17,0.15)" />
+      <rect x="4" y="4" width="10" height="10" fill="none" stroke="#111111" strokeWidth="1.5" />
+      <rect x="6.5" y="6.5" width="5" height="5" fill="#111111" />
+      <rect x="24" y="4" width="10" height="10" fill="none" stroke="#111111" strokeWidth="1.5" />
+      <rect x="26.5" y="6.5" width="5" height="5" fill="#111111" />
+      <rect x="4" y="24" width="10" height="10" fill="none" stroke="#111111" strokeWidth="1.5" />
+      <rect x="6.5" y="26.5" width="5" height="5" fill="#111111" />
+      <rect x="17" y="5" width="3" height="3" fill="#111111" opacity="0.9" />
+      <rect x="17" y="11" width="3" height="3" fill="#111111" opacity="0.6" />
+      <rect x="17" y="17" width="3" height="3" fill="#111111" opacity="0.9" />
+      <rect x="24" y="17" width="3" height="3" fill="#111111" opacity="0.75" />
+      <rect x="30" y="22" width="3" height="3" fill="#111111" opacity="0.85" />
+      <rect x="17" y="29" width="3" height="3" fill="#111111" opacity="0.7" />
+      <rect x="23" y="29" width="3" height="3" fill="#111111" opacity="0.85" />
     </svg>
   );
 }
@@ -86,26 +86,20 @@ function formatRelativeTime(dateString?: string): string {
 }
 
 const LANGUAGE_COLORS: Record<string, string> = {
-  TypeScript: "#3178c6",
-  JavaScript: "#f7df1e",
-  Python: "#3776ab",
-  Go: "#00add8",
-  Rust: "#dea584",
-  HTML: "#e34f26",
-  CSS: "#563d7c",
-  Shell: "#89e051",
-  Solidity: "#aa6746",
+  TypeScript: "#FF4D00",
+  JavaScript: "#6B6B6B",
+  Python: "#6B6B6B",
+  Go: "#6B6B6B",
+  Rust: "#6B6B6B",
+  HTML: "#6B6B6B",
+  CSS: "#6B6B6B",
+  Shell: "#6B6B6B",
+  Solidity: "#6B6B6B",
 };
 
-function getIssuerAccent(issuer: string): string {
-  const norm = issuer.toUpperCase();
-  if (norm.includes("AWS") || norm.includes("AMAZON")) return "#f59e0b";
-  if (norm.includes("META") || norm.includes("FACEBOOK")) return "#06b6d4";
-  if (norm.includes("GOOGLE") || norm.includes("GCP")) return "#38bdf8";
-  if (norm.includes("KUBERNETES") || norm.includes("CNCF") || norm.includes("LINUX")) return "#34d399";
-  if (norm.includes("DEEP") || norm.includes("AI")) return "#ec4899";
-  if (norm.includes("HASHICORP") || norm.includes("TERRAFORM")) return "#a855f7";
-  return "#38bdf8";
+function getIssuerAccent(issuer?: string): string {
+  void issuer;
+  return "#FF4D00";
 }
 
 // In-view 60s polling hook with fallback caching
@@ -153,13 +147,39 @@ function useInViewPolling<T>({ url, inView, intervalMs = 60000 }: UsePollingOpti
   useEffect(() => {
     if (!inView) return;
 
-    fetchData();
+    let timer: ReturnType<typeof setInterval> | null = null;
 
-    const timer = setInterval(() => {
-      fetchData();
-    }, intervalMs);
+    const startPolling = () => {
+      if (document.visibilityState === "visible") {
+        fetchData();
+        if (!timer) {
+          timer = setInterval(fetchData, intervalMs);
+        }
+      }
+    };
 
-    return () => clearInterval(timer);
+    const stopPolling = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        startPolling();
+      } else {
+        stopPolling();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    startPolling();
+
+    return () => {
+      stopPolling();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [inView, intervalMs, fetchData]);
 
   return {
@@ -175,8 +195,8 @@ function useInViewPolling<T>({ url, inView, intervalMs = 60000 }: UsePollingOpti
 function PanelErrorBanner({ show, message }: { show: boolean; message: string | null }) {
   if (!show) return null;
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[11px] uppercase tracking-wider">
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-[#C53030] font-mono text-[11px] uppercase tracking-wider">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#C53030] animate-ping" />
       <span>{message || "Couldn't load, showing last data"}</span>
     </div>
   );
@@ -337,7 +357,7 @@ export default function ProofOfWork() {
     <section
       ref={containerRef}
       id="proof-of-work"
-      className="relative w-full bg-[#0a0a0a] text-white py-24 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-white/5"
+      className="relative w-full bg-[#F5F3EE] text-[#111111] py-24 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-[rgba(17,17,17,0.10)]"
     >
       {/* Anchor targets for backwards compatibility */}
       <div id="github" className="absolute -top-24" />
@@ -347,22 +367,13 @@ export default function ProofOfWork() {
 
       {/* Background Architectural Grid Pattern */}
       <div
-        className="pointer-events-none absolute inset-0 -z-20 opacity-[0.14]"
+        className="pointer-events-none absolute inset-0 -z-20 opacity-70"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
+            linear-gradient(to right, rgba(17, 17, 17, 0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(17, 17, 17, 0.04) 1px, transparent 1px)
           `,
           backgroundSize: "64px 64px",
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Ambient Lighting Gradient */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background: "radial-gradient(circle 900px at 50% 20%, rgba(56, 189, 248, 0.04) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -371,38 +382,38 @@ export default function ProofOfWork() {
         {/* ============================================================================== */}
         {/* SECTION HERO HEADER */}
         {/* ============================================================================== */}
-        <div className="flex flex-col gap-6 border-b border-white/10 pb-12">
+        <div className="flex flex-col gap-6 border-b border-[rgba(17,17,17,0.10)] pb-12">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/90">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FF4D00] animate-pulse" />
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#111111] font-semibold">
                 (PROOF OF WORK)
               </span>
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
                 (LIVE TELEMETRY)
               </span>
             </div>
 
-            <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-400">
+            <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-[#6B6B6B]">
               <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
                 POLLING 60S IN VIEW
               </span>
-              <span className="hidden md:inline text-white/20">{"//"}</span>
+              <span className="hidden md:inline text-[rgba(17,17,17,0.2)]">{"//"}</span>
               <span className="hidden md:inline">GITHUB • VERCEL • CREDLY • LINKEDIN</span>
             </div>
           </div>
 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div>
-              <h2 className="font-anton uppercase text-6xl sm:text-8xl md:text-9xl tracking-tight text-white select-none leading-[0.9]">
+              <h2 className="font-anton uppercase text-6xl sm:text-8xl md:text-9xl tracking-tight text-[#111111] select-none leading-[0.9]">
                 PROOF /
               </h2>
               <h2 className="font-anton uppercase text-6xl sm:text-8xl md:text-9xl tracking-tight text-transparent select-none leading-[0.9] text-stroke-editorial">
                 OF WORK
               </h2>
             </div>
-            <p className="max-w-xl text-neutral-400 text-sm md:text-base leading-relaxed font-sans">
+            <p className="max-w-xl text-[#6B6B6B] text-sm md:text-base leading-relaxed font-sans">
               Real-time engineering verification stream. Live Git repository activity, edge deployment status badges, verifiable W3C holographic certifications, and professional network footprint.
             </p>
           </div>
@@ -412,12 +423,12 @@ export default function ProofOfWork() {
         {/* 1. GITHUB SECTION (REPOS, COMMITS, HEATMAP) */}
         {/* ============================================================================== */}
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[rgba(17,17,17,0.10)]">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-emerald-400 font-bold">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#C43A00] font-bold">
                 01 // GITHUB ECOSYSTEM
               </span>
-              <span className="text-neutral-500 font-mono text-xs">
+              <span className="text-[#6B6B6B] font-mono text-xs">
                 (PUBLIC REPOS & ACTIVITY)
               </span>
             </div>
@@ -425,21 +436,21 @@ export default function ProofOfWork() {
           </div>
 
           {/* GitHub Heatmap Calendar */}
-          <div className="glass p-6 md:p-8 rounded-2xl flex flex-col gap-6">
+          <div className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm p-6 md:p-8 rounded-2xl flex flex-col gap-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="font-anton uppercase text-2xl md:text-3xl tracking-tight text-white">
+                <h3 className="font-anton uppercase text-2xl md:text-3xl tracking-tight text-[#111111]">
                   CONTRIBUTION CALENDAR
                 </h3>
-                <span className="font-mono text-xs uppercase tracking-widest text-neutral-400">
+                <span className="font-mono text-xs uppercase tracking-widest text-[#6B6B6B]">
                   ANNUAL COMMIT DENSITY & CODE VELOCITY
                 </span>
               </div>
-              <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 border border-white/10 font-mono text-xs">
-                <span className="text-emerald-400 font-bold text-sm">
+              <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-[#F5F3EE] border border-[rgba(17,17,17,0.10)] font-mono text-xs">
+                <span className="text-[#C43A00] font-bold text-sm">
                   {heatmapData?.total ?? (heatmapLoading ? "..." : 0)}
                 </span>
-                <span className="text-neutral-400 uppercase tracking-wider">
+                <span className="text-[#6B6B6B] uppercase tracking-wider">
                   TOTAL CONTRIBUTIONS IN PAST YEAR
                 </span>
               </div>
@@ -447,18 +458,18 @@ export default function ProofOfWork() {
 
             {/* Heatmap Grid */}
             {heatmapLoading && !heatmapData ? (
-              <div className="w-full h-32 rounded-lg bg-white/5 animate-pulse" />
+              <div className="w-full h-32 rounded-lg bg-[rgba(17,17,17,0.06)] animate-pulse" />
             ) : (
               <div className="w-full overflow-x-auto pb-2 scrollbar-thin">
                 <div className="min-w-[780px] flex gap-1.5 items-center justify-between">
                   {(heatmapData?.weeks || []).map((week: HeatmapWeek, wIdx: number) => (
                     <div key={wIdx} className="flex flex-col gap-1.5">
                       {week.days.map((day, dIdx) => {
-                        let bg = "#181818";
-                        if (day.count > 0 && day.count < 3) bg = "#064e3b";
-                        else if (day.count >= 3 && day.count < 6) bg = "#059669";
-                        else if (day.count >= 6 && day.count < 10) bg = "#10b981";
-                        else if (day.count >= 10) bg = "#34d399";
+                        let bg = "#E8E6DF";
+                        if (day.count > 0 && day.count < 3) bg = "#FFC2A8";
+                        else if (day.count >= 3 && day.count < 6) bg = "#FF8A50";
+                        else if (day.count >= 6 && day.count < 10) bg = "#FF6420";
+                        else if (day.count >= 10) bg = "#FF4D00";
 
                         return (
                           <div
@@ -472,14 +483,14 @@ export default function ProofOfWork() {
                     </div>
                   ))}
                 </div>
-                <div className="flex items-center justify-between mt-4 text-[10px] font-mono uppercase tracking-wider text-neutral-500">
+                <div className="flex items-center justify-between mt-4 text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B]">
                   <span>LESS FREQUENT</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#181818]" />
-                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#064e3b]" />
-                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#059669]" />
-                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#10b981]" />
-                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#34d399]" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#E8E6DF]" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#FFC2A8]" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#FF8A50]" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#FF6420]" />
+                    <span className="w-2.5 h-2.5 rounded-[2px] bg-[#FF4D00]" />
                   </div>
                   <span>HIGH VELOCITY</span>
                 </div>
@@ -511,31 +522,31 @@ export default function ProofOfWork() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {githubData?.repos.slice(0, 8).map((repo: GitHubRepoItem) => {
-                    const langColor = repo.language ? LANGUAGE_COLORS[repo.language] || "#38bdf8" : "#888";
+                    const langColor = repo.language ? LANGUAGE_COLORS[repo.language] || "#FF4D00" : "#888";
                     return (
                       <a
                         key={repo.url}
                         href={repo.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="glass group p-5 rounded-2xl transition-all duration-300 flex flex-col justify-between"
+                        className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm hover:border-[rgba(17,17,17,0.25)] hover:shadow-md group p-5 rounded-2xl transition-all duration-300 flex flex-col justify-between"
                         data-cursor="hover"
                       >
                         <div>
                           <div className="flex items-center justify-between gap-2 mb-2">
-                            <h4 className="font-mono font-bold text-sm text-white group-hover:text-emerald-400 transition-colors truncate">
+                            <h4 className="font-mono font-bold text-sm text-[#111111] group-hover:text-[#C43A00] transition-colors truncate">
                               {repo.name}
                             </h4>
-                            <span className="text-neutral-500 text-xs shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+                            <span className="text-[#6B6B6B] text-xs shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
                               ↗
                             </span>
                           </div>
-                          <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed font-sans mb-4">
+                          <p className="text-xs text-[#6B6B6B] line-clamp-2 leading-relaxed font-sans mb-4">
                             {repo.description || "Public open-source repository and codebase."}
                           </p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-3 border-t border-white/5 text-[11px] font-mono text-neutral-400">
+                        <div className="flex items-center justify-between pt-3 border-t border-[rgba(17,17,17,0.08)] text-[11px] font-mono text-[#6B6B6B]">
                           <div className="flex items-center gap-3">
                             {repo.language && (
                               <div className="flex items-center gap-1.5">
@@ -548,7 +559,7 @@ export default function ProofOfWork() {
                               <span>{repo.stars}</span>
                             </div>
                           </div>
-                          <span className="text-[10px] text-neutral-500">
+                          <span className="text-[10px] text-[#6B6B6B]">
                             {formatRelativeTime(repo.pushedAt)}
                           </span>
                         </div>
@@ -562,38 +573,38 @@ export default function ProofOfWork() {
             {/* Latest 8 Push Events (1 Column Ticker) */}
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between pb-2">
-                <span className="font-mono text-xs uppercase tracking-widest text-neutral-400">
+                <span className="font-mono text-xs uppercase tracking-widest text-[#6B6B6B]">
                   LATEST PUSH ACTIVITY
                 </span>
-                <span className="font-mono text-xs text-neutral-500">RECENT 08</span>
+                <span className="font-mono text-xs text-[#6B6B6B]">RECENT 08</span>
               </div>
 
               {githubLoading ? (
                 <div className="flex flex-col gap-3">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse border border-white/5" />
+                    <div key={i} className="h-16 rounded-xl bg-[rgba(17,17,17,0.06)] animate-pulse border border-[rgba(17,17,17,0.08)]" />
                   ))}
                 </div>
               ) : (githubData?.events?.length || 0) === 0 ? (
-                <div className="p-8 rounded-xl bg-white/5 border border-white/10 text-center font-mono text-xs text-neutral-400">
+                <div className="p-8 rounded-xl bg-white border border-[rgba(17,17,17,0.10)] text-center font-mono text-xs text-[#6B6B6B]">
                   NO RECENT PUSH EVENTS
                 </div>
               ) : (
-                <div className="glass flex flex-col gap-2.5 p-5 rounded-2xl">
+                <div className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm flex flex-col gap-2.5 p-5 rounded-2xl">
                   {githubData?.events.slice(0, 8).map((ev: GitHubPushEventItem, i: number) => (
                     <div
                       key={i}
-                      className="p-3 rounded-lg bg-white/[0.03] border border-white/5 flex flex-col gap-1 hover:border-white/20 transition-colors"
+                      className="p-3 rounded-lg bg-[#F5F3EE] border border-[rgba(17,17,17,0.08)] flex flex-col gap-1 hover:border-[rgba(17,17,17,0.2)] transition-colors"
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono font-semibold text-xs text-emerald-400 truncate">
+                        <span className="font-mono font-semibold text-xs text-[#111111] truncate">
                           {ev.repo}
                         </span>
-                        <span className="font-mono text-[10px] text-neutral-500 shrink-0">
+                        <span className="font-mono text-[10px] text-[#6B6B6B] shrink-0">
                           {formatRelativeTime(ev.time)}
                         </span>
                       </div>
-                      <p className="font-mono text-[11px] text-neutral-300 truncate">
+                      <p className="font-mono text-[11px] text-[#6B6B6B] truncate">
                         $ git commit -m &quot;{ev.message}&quot;
                       </p>
                     </div>
@@ -611,12 +622,12 @@ export default function ProofOfWork() {
         {/* 2. DEPLOYS SECTION (VERCEL + NETLIFY SIDE BY SIDE) */}
         {/* ============================================================================== */}
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[rgba(17,17,17,0.10)]">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-sky-400 font-bold">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#C43A00] font-bold">
                 02 // CLOUD DEPLOYMENTS
               </span>
-              <span className="text-neutral-500 font-mono text-xs">
+              <span className="text-[#6B6B6B] font-mono text-xs">
                 (EDGE RUNTIME STATUS)
               </span>
             </div>
@@ -625,17 +636,17 @@ export default function ProofOfWork() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* VERCEL PANEL */}
-            <div className="glass p-6 md:p-8 rounded-2xl flex flex-col gap-6">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm p-6 md:p-8 rounded-2xl flex flex-col gap-6">
+              <div className="flex items-center justify-between pb-4 border-b border-[rgba(17,17,17,0.08)]">
                 <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 fill-white" viewBox="0 0 1155 1000">
+                  <svg className="w-5 h-5 fill-[#111111]" viewBox="0 0 1155 1000">
                     <path d="m577.3 0 577.4 1000H0z" />
                   </svg>
-                  <h3 className="font-anton uppercase text-2xl tracking-tight text-white">
+                  <h3 className="font-anton uppercase text-2xl tracking-tight text-[#111111]">
                     VERCEL EDGE
                   </h3>
                 </div>
-                <span className="font-mono text-xs text-neutral-400">
+                <span className="font-mono text-xs text-[#6B6B6B]">
                   {vercelDeploys.length} SITES
                 </span>
               </div>
@@ -643,11 +654,11 @@ export default function ProofOfWork() {
               {deploysLoading ? (
                 <div className="flex flex-col gap-3">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-20 rounded-xl bg-white/5 animate-pulse" />
+                    <div key={i} className="h-20 rounded-xl bg-[rgba(17,17,17,0.06)] animate-pulse" />
                   ))}
                 </div>
               ) : vercelDeploys.length === 0 ? (
-                <div className="p-8 rounded-xl bg-white/[0.02] border border-white/5 text-center font-mono text-xs text-neutral-500">
+                <div className="p-8 rounded-xl bg-[#F5F3EE] border border-[rgba(17,17,17,0.08)] text-center font-mono text-xs text-[#6B6B6B]">
                   NO ACTIVE VERCEL DEPLOYMENTS IN WHITELIST
                 </div>
               ) : (
@@ -662,17 +673,17 @@ export default function ProofOfWork() {
                         href={dep.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-4 rounded-xl bg-[#141414] border border-white/5 hover:border-white/20 transition-all flex items-center justify-between group"
+                        className="p-4 rounded-xl bg-[#F5F3EE] border border-[rgba(17,17,17,0.08)] hover:border-[rgba(17,17,17,0.25)] transition-all flex items-center justify-between group"
                         data-cursor="hover"
                       >
                         <div className="flex flex-col gap-1">
-                          <span className="font-mono font-bold text-sm text-white group-hover:text-sky-400 transition-colors uppercase">
+                          <span className="font-mono font-bold text-sm text-[#111111] group-hover:text-[#C43A00] transition-colors uppercase">
                             {dep.name}
                           </span>
-                          <div className="flex items-center gap-2 text-xs font-mono text-neutral-400">
-                            <span className="text-neutral-500">branch: {dep.branch}</span>
+                          <div className="flex items-center gap-2 text-xs font-mono text-[#6B6B6B]">
+                            <span>branch: {dep.branch}</span>
                             <span>•</span>
-                            <span className="text-neutral-400">deployed {formatRelativeTime(dep.createdAt)}</span>
+                            <span>deployed {formatRelativeTime(dep.createdAt)}</span>
                           </div>
                         </div>
 
@@ -680,20 +691,20 @@ export default function ProofOfWork() {
                           <span
                             className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border flex items-center gap-1.5 ${
                               isReady
-                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                                ? "bg-[#FF4D00]/10 text-[#C43A00] border-[#FF4D00]/25"
                                 : isBuilding
-                                ? "bg-amber-500/10 text-amber-300 border-amber-500/30 animate-pulse"
-                                : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                                ? "bg-amber-500/10 text-amber-700 border-amber-500/25 animate-pulse"
+                                : "bg-red-500/10 text-[#C53030] border-red-500/25"
                             }`}
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full ${
-                                isReady ? "bg-emerald-400" : isBuilding ? "bg-amber-400" : "bg-rose-400"
+                                isReady ? "bg-[#FF4D00]" : isBuilding ? "bg-amber-500" : "bg-[#C53030]"
                               }`}
                             />
                             {dep.status}
                           </span>
-                          <span className="text-neutral-500 group-hover:translate-x-0.5 group-hover:text-white transition-all text-xs">
+                          <span className="text-[#6B6B6B] group-hover:translate-x-0.5 group-hover:text-[#111111] transition-all text-xs">
                             ↗
                           </span>
                         </div>
@@ -705,17 +716,17 @@ export default function ProofOfWork() {
             </div>
 
             {/* NETLIFY PANEL */}
-            <div className="glass p-6 md:p-8 rounded-2xl flex flex-col gap-6">
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm p-6 md:p-8 rounded-2xl flex flex-col gap-6">
+              <div className="flex items-center justify-between pb-4 border-b border-[rgba(17,17,17,0.08)]">
                 <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 fill-[#00ad9f]" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 fill-[#111111]" viewBox="0 0 24 24">
                     <path d="M16.924 10.963l-4.04-4.04a.5.5 0 00-.707 0L8.136 10.963a.5.5 0 000 .707l4.04 4.04a.5.5 0 00.708 0l4.04-4.04a.5.5 0 000-.707zm-4.394 3.333l-2.98-2.98 2.98-2.98 2.98 2.98-2.98 2.98z" />
                   </svg>
-                  <h3 className="font-anton uppercase text-2xl tracking-tight text-white">
+                  <h3 className="font-anton uppercase text-2xl tracking-tight text-[#111111]">
                     NETLIFY EDGE
                   </h3>
                 </div>
-                <span className="font-mono text-xs text-neutral-400">
+                <span className="font-mono text-xs text-[#6B6B6B]">
                   {netlifyDeploys.length} SITES
                 </span>
               </div>
@@ -723,11 +734,11 @@ export default function ProofOfWork() {
               {deploysLoading ? (
                 <div className="flex flex-col gap-3">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-20 rounded-xl bg-white/5 animate-pulse" />
+                    <div key={i} className="h-20 rounded-xl bg-[rgba(17,17,17,0.06)] animate-pulse" />
                   ))}
                 </div>
               ) : netlifyDeploys.length === 0 ? (
-                <div className="p-8 rounded-xl bg-white/[0.02] border border-white/5 text-center font-mono text-xs text-neutral-500">
+                <div className="p-8 rounded-xl bg-[#F5F3EE] border border-[rgba(17,17,17,0.08)] text-center font-mono text-xs text-[#6B6B6B]">
                   NO ACTIVE NETLIFY SITES IN WHITELIST
                 </div>
               ) : (
@@ -742,17 +753,17 @@ export default function ProofOfWork() {
                         href={dep.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-4 rounded-xl bg-[#141414] border border-white/5 hover:border-white/20 transition-all flex items-center justify-between group"
+                        className="p-4 rounded-xl bg-[#F5F3EE] border border-[rgba(17,17,17,0.08)] hover:border-[rgba(17,17,17,0.25)] transition-all flex items-center justify-between group"
                         data-cursor="hover"
                       >
                         <div className="flex flex-col gap-1">
-                          <span className="font-mono font-bold text-sm text-white group-hover:text-emerald-400 transition-colors uppercase">
+                          <span className="font-mono font-bold text-sm text-[#111111] group-hover:text-[#C43A00] transition-colors uppercase">
                             {dep.name}
                           </span>
-                          <div className="flex items-center gap-2 text-xs font-mono text-neutral-400">
-                            <span className="text-neutral-500">branch: {dep.branch}</span>
+                          <div className="flex items-center gap-2 text-xs font-mono text-[#6B6B6B]">
+                            <span>branch: {dep.branch}</span>
                             <span>•</span>
-                            <span className="text-neutral-400">deployed {formatRelativeTime(dep.createdAt)}</span>
+                            <span>deployed {formatRelativeTime(dep.createdAt)}</span>
                           </div>
                         </div>
 
@@ -760,20 +771,20 @@ export default function ProofOfWork() {
                           <span
                             className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase border flex items-center gap-1.5 ${
                               isReady
-                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                                ? "bg-[#FF4D00]/10 text-[#C43A00] border-[#FF4D00]/25"
                                 : isBuilding
-                                ? "bg-amber-500/10 text-amber-300 border-amber-500/30 animate-pulse"
-                                : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                                ? "bg-amber-500/10 text-amber-700 border-amber-500/25 animate-pulse"
+                                : "bg-red-500/10 text-[#C53030] border-red-500/25"
                             }`}
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full ${
-                                isReady ? "bg-emerald-400" : isBuilding ? "bg-amber-400" : "bg-rose-400"
+                                isReady ? "bg-[#FF4D00]" : isBuilding ? "bg-amber-500" : "bg-[#C53030]"
                               }`}
                             />
                             {dep.status}
                           </span>
-                          <span className="text-neutral-500 group-hover:translate-x-0.5 group-hover:text-white transition-all text-xs">
+                          <span className="text-[#6B6B6B] group-hover:translate-x-0.5 group-hover:text-[#111111] transition-all text-xs">
                             ↗
                           </span>
                         </div>
@@ -790,12 +801,12 @@ export default function ProofOfWork() {
         {/* 3. CERTIFICATIONS SECTION (HOLOGRAPHIC CARDS FROM /api/badges) */}
         {/* ============================================================================== */}
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[rgba(17,17,17,0.10)]">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-purple-400 font-bold">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#C43A00] font-bold">
                 03 // VERIFIED CREDENTIALS
               </span>
-              <span className="text-neutral-500 font-mono text-xs">
+              <span className="text-[#6B6B6B] font-mono text-xs">
                 (HOLOGRAPHIC 3D CARDS)
               </span>
             </div>
@@ -810,10 +821,10 @@ export default function ProofOfWork() {
                 <button
                   key={tab}
                   onClick={() => setActiveIssuerTab(tab)}
-                  className={`px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                  className={`px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-200 whitespace-nowrap cursor-pointer ${
                     isActive
-                      ? "bg-white text-black font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-                      : "bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 border border-white/5"
+                      ? "bg-[#111111] text-white font-bold shadow-md"
+                      : "bg-white text-[#6B6B6B] hover:text-[#111111] border border-[rgba(17,17,17,0.12)]"
                   }`}
                   data-cursor="hover"
                 >
@@ -827,11 +838,11 @@ export default function ProofOfWork() {
           {badgesLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-96 rounded-2xl bg-white/5 animate-pulse border border-white/5" />
+                <div key={i} className="h-96 rounded-2xl bg-[rgba(17,17,17,0.06)] animate-pulse border border-[rgba(17,17,17,0.08)]" />
               ))}
             </div>
           ) : filteredBadges.length === 0 ? (
-            <div className="p-12 rounded-2xl bg-white/5 border border-white/10 text-center font-mono text-xs text-neutral-400">
+            <div className="p-12 rounded-2xl bg-white border border-[rgba(17,17,17,0.10)] text-center font-mono text-xs text-[#6B6B6B]">
               NO BADGES FOUND FOR CURRENT FILTER
             </div>
           ) : (
@@ -872,44 +883,42 @@ export default function ProofOfWork() {
                       >
                         {/* FRONT FACE */}
                         <div
-                          className="glass absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 [backface-visibility:hidden]"
+                          className="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 [backface-visibility:hidden] bg-white border"
                           style={{
-                            borderColor: isHovered ? `${accent}88` : "rgba(255, 255, 255, 0.12)",
+                            borderColor: isHovered ? "#FF4D00" : "rgba(17, 17, 17, 0.10)",
                             boxShadow: isHovered
-                              ? `0 24px 50px -12px ${accent}40, 0 0 35px ${accent}20, inset 0 1px 1px rgba(255,255,255,0.3)`
-                              : "0 12px 30px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.08)",
+                              ? "0 20px 40px -10px rgba(17, 17, 17, 0.12), 0 0 20px rgba(255, 77, 0, 0.15)"
+                              : "0 8px 30px rgba(17, 17, 17, 0.06)",
                           }}
                         >
                           {/* Moving Specular Glare */}
                           <div
                             className="pointer-events-none absolute inset-0 rounded-2xl transition-opacity duration-300"
                             style={{
-                              opacity: isHovered && !isFlipped ? 0.75 : 0,
-                              background: `radial-gradient(circle 240px at ${badgeGlarePos.x}% ${badgeGlarePos.y}%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.08) 35%, transparent 70%)`,
-                              mixBlendMode: "overlay",
+                              opacity: isHovered && !isFlipped ? 0.6 : 0,
+                              background: `radial-gradient(circle 240px at ${badgeGlarePos.x}% ${badgeGlarePos.y}%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.2) 35%, transparent 70%)`,
                             }}
                             aria-hidden="true"
                           />
 
-                          {/* Holographic Rainbow Foil Gradient */}
+                          {/* Subtle Silver Sheen Foil Gradient */}
                           <div
                             className="pointer-events-none absolute inset-0 rounded-2xl transition-opacity duration-300"
                             style={{
-                              opacity: isHovered && !isFlipped ? 0.5 : 0,
-                              background: `conic-gradient(from ${badgeFoilAngle}deg at ${badgeGlarePos.x}% ${badgeGlarePos.y}%, #ff0055 0%, #ff8800 14%, #ffdd00 28%, #00ffaa 42%, #00ccff 57%, #aa00ff 71%, #ff00aa 85%, #ff0055 100%)`,
-                              mixBlendMode: "color-dodge",
+                              opacity: isHovered && !isFlipped ? 0.35 : 0,
+                              background: `linear-gradient(${badgeFoilAngle}deg, rgba(255,255,255,0) 0%, rgba(220,220,220,0.6) 45%, rgba(255,255,255,0.9) 50%, rgba(220,220,220,0.6) 55%, rgba(255,255,255,0) 100%)`,
                             }}
                             aria-hidden="true"
                           />
 
                           {/* Top Bar: Issuer + Smart Chip + NEW tag */}
-                          <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
-                            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-semibold truncate max-w-[130px]">
+                          <div className="flex items-center justify-between gap-2 border-b border-[rgba(17,17,17,0.08)] pb-3">
+                            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#6B6B6B] font-semibold truncate max-w-[130px]">
                               {badge.issuer}
                             </span>
                             <div className="flex items-center gap-2">
                               {isNew && (
-                                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.5)] animate-pulse">
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest bg-[#FF4D00]/10 text-[#C43A00] border border-[#FF4D00]/30 animate-pulse">
                                   NEW
                                 </span>
                               )}
@@ -919,7 +928,7 @@ export default function ProofOfWork() {
 
                           {/* Center: Title & Accent Line */}
                           <div className="my-auto py-2">
-                            <h3 className="font-anton uppercase text-2xl tracking-tight text-white leading-[1.05] line-clamp-3">
+                            <h3 className="font-anton uppercase text-2xl tracking-tight text-[#111111] leading-[1.05] line-clamp-3">
                               {badge.title}
                             </h3>
                             <div
@@ -929,10 +938,10 @@ export default function ProofOfWork() {
                           </div>
 
                           {/* Bottom Info: Year, Verified, QR */}
-                          <div className="flex flex-col gap-3 pt-3 border-t border-white/10">
-                            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-neutral-400">
+                          <div className="flex flex-col gap-3 pt-3 border-t border-[rgba(17,17,17,0.08)]">
+                            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#6B6B6B]">
                               <span>ISSUED // {year}</span>
-                              <span className="text-[9px] text-neutral-500 font-mono">
+                              <span className="text-[9px] text-[#6B6B6B] font-mono">
                                 VERIFIED BADGE
                               </span>
                             </div>
@@ -940,11 +949,11 @@ export default function ProofOfWork() {
                             <div className="flex items-center justify-between">
                               <QrMatrixGlyph />
                               <div className="flex flex-col items-end text-right font-mono">
-                                <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-neutral-300">
+                                <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-[#111111]">
                                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accent }} />
                                   <span>VERIFIED</span>
                                 </div>
-                                <span className="text-[8px] tracking-[0.2em] text-neutral-500 mt-0.5">
+                                <span className="text-[8px] tracking-[0.2em] text-[#6B6B6B] mt-0.5">
                                   CLICK TO FLIP ↺
                                 </span>
                               </div>
@@ -954,50 +963,46 @@ export default function ProofOfWork() {
 
                         {/* BACK FACE */}
                         <div
-                          className="glass absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)]"
-                          style={{
-                            borderColor: `${accent}66`,
-                            boxShadow: `0 20px 45px -10px ${accent}30, inset 0 1px 1px rgba(255,255,255,0.2)`,
-                          }}
+                          className="absolute inset-0 w-full h-full rounded-2xl p-5 flex flex-col justify-between overflow-hidden transition-all duration-300 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white border border-[rgba(17,17,17,0.12)] shadow-[0_16px_40px_rgba(17,17,17,0.08)]"
                         >
                           <div>
-                            <div className="flex items-center justify-between border-b border-white/10 pb-2.5 mb-2.5">
-                              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 font-semibold truncate max-w-[140px]">
+                            <div className="flex items-center justify-between border-b border-[rgba(17,17,17,0.08)] pb-2.5 mb-2.5">
+                              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#6B6B6B] font-semibold truncate max-w-[140px]">
                                 {badge.issuer}
                               </span>
-                              <span className="font-mono text-[9px] uppercase tracking-wider text-neutral-500 hover:text-white transition-colors">
+                              <span className="font-mono text-[9px] uppercase tracking-wider text-[#6B6B6B] hover:text-[#111111] transition-colors">
                                 ↺ FLIP
                               </span>
                             </div>
 
-                            <h4 className="font-anton uppercase text-lg tracking-tight text-white leading-tight line-clamp-2">
+                            <h4 className="font-anton uppercase text-lg tracking-tight text-[#111111] leading-tight line-clamp-2">
                               {badge.title}
                             </h4>
                           </div>
 
-                          <div className="my-auto py-2 flex flex-col gap-3 text-xs font-mono text-neutral-300">
+                          <div className="my-auto py-2 flex flex-col gap-3 text-xs font-mono text-[#6B6B6B]">
                             <div>
-                              <span className="text-[9px] text-neutral-500 uppercase tracking-widest block mb-1">
+                              <span className="text-[9px] text-[#6B6B6B] uppercase tracking-widest block mb-1">
                                 ISSUED DATE
                               </span>
-                              <span>{new Date(badge.issuedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                              <span className="text-[#111111]">{new Date(badge.issuedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
                             </div>
 
                             <div>
-                              <span className="text-[9px] text-neutral-500 uppercase tracking-widest block mb-1">
+                              <span className="text-[9px] text-[#6B6B6B] uppercase tracking-widest block mb-1">
                                 ISSUING ENTITY
                               </span>
-                              <span>{badge.issuer}</span>
+                              <span className="text-[#111111]">{badge.issuer}</span>
                             </div>
                           </div>
 
-                          <div className="pt-3 border-t border-white/10">
+                          <div className="pt-3 border-t border-[rgba(17,17,17,0.08)]">
                             <a
                               href={badge.url}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="w-full py-2.5 px-3 rounded-lg bg-white/10 hover:bg-white text-white hover:text-black font-mono text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                              className="w-full py-2.5 px-3 rounded-lg bg-[#111111] hover:bg-[#FF4D00] text-white hover:text-[#111111] font-mono text-xs uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 group/btn"
                               data-cursor="hover"
                             >
                               <span>VERIFY CREDENTIAL</span>
@@ -1020,52 +1025,44 @@ export default function ProofOfWork() {
         {/* 4. LINKEDIN SECTION (STATIC PROFILE CARD) */}
         {/* ============================================================================== */}
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[rgba(17,17,17,0.10)]">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-blue-400 font-bold">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#C43A00] font-bold">
                 04 // PROFESSIONAL NETWORK
               </span>
-              <span className="text-neutral-500 font-mono text-xs">
+              <span className="text-[#6B6B6B] font-mono text-xs">
                 (LINKEDIN PRESENCE & RESUME)
               </span>
             </div>
-            <span className="font-mono text-xs text-neutral-500">EXECUTIVE OVERVIEW</span>
+            <span className="font-mono text-xs text-[#6B6B6B]">EXECUTIVE OVERVIEW</span>
           </div>
 
-          <div className="glass p-8 md:p-12 rounded-3xl flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
-            {/* Ambient Background Accent */}
-            <div
-              className="pointer-events-none absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl"
-              aria-hidden="true"
-            />
-
+          <div className="bg-white border border-[rgba(17,17,17,0.10)] shadow-sm p-8 md:p-12 rounded-3xl flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 relative z-10">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-400 p-[2px] shadow-[0_0_40px_rgba(37,99,235,0.25)] shrink-0">
-                <div className="w-full h-full rounded-2xl bg-[#0e0e0e] flex items-center justify-center font-anton text-4xl text-white select-none">
-                  AV
-                </div>
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-anton text-4xl shadow-sm shrink-0 border border-[rgba(17,17,17,0.12)]">
+                AV
               </div>
 
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
-                  <h3 className="font-anton uppercase text-3xl sm:text-4xl tracking-tight text-white">
+                  <h3 className="font-anton uppercase text-3xl sm:text-4xl tracking-tight text-[#111111]">
                     ABHISHEK VERMA
                   </h3>
-                  <span className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-[11px] font-bold" title="Verified Professional">
+                  <span className="w-5 h-5 rounded-full bg-[#111111] flex items-center justify-center text-white text-[11px] font-bold" title="Verified Professional">
                     ✓
                   </span>
                 </div>
 
-                <p className="text-sm font-mono text-sky-400 uppercase tracking-wider">
+                <p className="text-sm font-mono text-[#C43A00] uppercase tracking-wider font-semibold">
                   Lead Full-Stack Architect & AI Systems Engineer
                 </p>
 
-                <p className="text-xs text-neutral-400 font-sans max-w-lg leading-relaxed">
+                <p className="text-xs text-[#6B6B6B] font-sans max-w-lg leading-relaxed">
                   Specializing in enterprise cloud infrastructure, high-throughput streaming telemetry, and autonomous multi-agent pipelines. Based in {CONTACT_DATA.location}, working globally.
                 </p>
 
-                <div className="flex items-center gap-4 mt-2 font-mono text-[11px] text-neutral-500">
-                  <span className="text-white">500+ Connections</span>
+                <div className="flex items-center gap-4 mt-2 font-mono text-[11px] text-[#6B6B6B]">
+                  <span className="text-[#111111] font-medium">500+ Connections</span>
                   <span>•</span>
                   <span>Open for Advisory & Senior Engineering</span>
                 </div>
@@ -1077,7 +1074,7 @@ export default function ProofOfWork() {
                 href={linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs uppercase tracking-widest font-bold transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(37,99,235,0.4)]"
+                className="px-6 py-3.5 rounded-xl bg-[#FF4D00] hover:bg-[#E04400] text-[#111111] font-mono text-xs uppercase tracking-widest font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
                 data-cursor="hover"
               >
                 <span>CONNECT ON LINKEDIN</span>
@@ -1089,7 +1086,7 @@ export default function ProofOfWork() {
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                className="px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-mono text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2"
+                className="px-6 py-3.5 rounded-xl bg-white hover:bg-neutral-50 border border-[rgba(17,17,17,0.15)] text-[#111111] font-mono text-xs uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 shadow-sm"
                 data-cursor="hover"
               >
                 <span>DOWNLOAD RESUME</span>

@@ -22,7 +22,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "AMAZON WEB SERVICES",
     year: "2024",
     credentialId: "AWS-SAA-PLACEHOLDER-01",
-    accent: "#f59e0b", // Amber / AWS Gold
+    accent: "#FF4D00",
     details:
       "Comprehensive validation of high-availability cloud architectures, VPC networking topologies, multi-tier microservices, automated disaster recovery, and cost-optimized distributed storage systems.",
     skills: [
@@ -41,7 +41,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "META / COURSERA",
     year: "2024",
     credentialId: "META-FED-PLACEHOLDER-02",
-    accent: "#06b6d4", // Cyan
+    accent: "#FF4D00",
     details:
       "Advanced mastery of production React 18 & Next.js architectures, concurrent rendering pipelines, complex client-side state machines, Core Web Vitals optimization, and enterprise design systems.",
     skills: [
@@ -60,7 +60,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "GOOGLE CLOUD",
     year: "2023",
     credentialId: "GCP-PCA-PLACEHOLDER-03",
-    accent: "#38bdf8", // Sky Blue
+    accent: "#FF4D00",
     details:
       "Enterprise infrastructure design on Google Cloud Platform, Google Kubernetes Engine (GKE) cluster automation, hybrid interconnects, BigQuery data pipelines, and zero-trust IAM policies.",
     skills: [
@@ -79,7 +79,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "CNCF / LINUX FOUNDATION",
     year: "2023",
     credentialId: "CNCF-CKA-PLACEHOLDER-04",
-    accent: "#34d399", // Emerald Green
+    accent: "#FF4D00",
     details:
       "Hands-on demonstration of Kubernetes cluster administration, multi-node deployment, pod networking with CNI, etcd backup/restore, ingress controllers, RBAC policies, and cluster troubleshooting.",
     skills: [
@@ -98,7 +98,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "DEEPLEARNING.AI",
     year: "2023",
     credentialId: "DLAI-DLS-PLACEHOLDER-05",
-    accent: "#ec4899", // Pink / Fuchsia
+    accent: "#FF4D00",
     details:
       "Foundational theory and implementation of neural network architectures, transformers, self-attention mechanisms, convolutional vision models, vector embeddings, and LLM fine-tuning pipelines.",
     skills: [
@@ -117,7 +117,7 @@ export const CERTIFICATIONS: Certification[] = [
     issuer: "HASHICORP",
     year: "2022",
     credentialId: "HASHI-TA-PLACEHOLDER-06",
-    accent: "#a855f7", // Purple
+    accent: "#FF4D00",
     details:
       "Declarative Infrastructure as Code (IaC) principles, state file isolation and locking, custom modular architecture development, multi-cloud cloud provisioning, and automated GitOps CI/CD pipelines.",
     skills: [

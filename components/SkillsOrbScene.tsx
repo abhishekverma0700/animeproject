@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useRef, useMemo, useEffect } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Billboard, RoundedBox, Text, OrbitControls } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { Billboard, RoundedBox, Text, OrbitControls, PerformanceMonitor } from "@react-three/drei";
 import * as THREE from "three";
 import { SKILLS_DATA, SkillCategory, SkillItem } from "@/data/skills";
+import { usePerformance } from "./PerformanceContext";
 
 // Orbital configuration for the 4 categories
 const CATEGORY_RINGS = [
@@ -63,7 +63,7 @@ function SkillPill({
 }: SkillPillProps) {
   const groupRef = useRef<THREE.Group>(null);
   const borderMatRef = useRef<THREE.MeshBasicMaterial>(null);
-  const bodyMatRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const bodyMatRef = useRef<THREE.MeshStandardMaterial>(null);
   const dotMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const textRef = useRef<React.ElementRef<typeof Text>>(null);
 
@@ -120,7 +120,7 @@ function SkillPill({
   return (
     <group ref={groupRef} scale={0}>
       <Billboard follow={true}>
-        {/* Glowing pill border */}
+        {/* Pill border */}
         <RoundedBox
           args={[pillWidth + 0.03, pillHeight + 0.03, 0.02]}
           radius={0.16}
@@ -129,38 +129,34 @@ function SkillPill({
         >
           <meshBasicMaterial
             ref={borderMatRef}
-            color={category.accent}
+            color={isHovered ? "#FF4D00" : "#D0CECA"}
             transparent
             opacity={0}
           />
         </RoundedBox>
 
-        {/* Glass body */}
+        {/* White glass body */}
         <RoundedBox
           args={[pillWidth, pillHeight, 0.03]}
           radius={0.15}
-          smoothness={4}
+          smoothness={3}
         >
-          <meshPhysicalMaterial
+          <meshStandardMaterial
             ref={bodyMatRef}
-            color="#080c12"
-            transmission={0.7}
-            roughness={0.18}
-            metalness={0.1}
+            color="#FFFFFF"
+            roughness={0.15}
+            metalness={0.05}
             transparent
             opacity={0}
-            reflectivity={0.8}
-            clearcoat={1.0}
-            clearcoatRoughness={0.15}
           />
         </RoundedBox>
 
-        {/* Category Accent Dot */}
+        {/* Accent Dot */}
         <mesh position={[-pillWidth / 2 + 0.18, 0, 0.022]}>
           <circleGeometry args={[0.045, 16]} />
           <meshBasicMaterial
             ref={dotMatRef}
-            color={category.accent}
+            color="#FF4D00"
             transparent
             opacity={0}
           />
@@ -172,7 +168,7 @@ function SkillPill({
           font="/fonts/sans.ttf"
           position={[0.07, 0, 0.025]}
           fontSize={0.135}
-          color={isHovered ? "#ffffff" : isDimmed ? "#64748b" : "#f1f5f9"}
+          color={isHovered ? "#C43A00" : isDimmed ? "#6B6B6B" : "#111111"}
           anchorX="center"
           anchorY="middle"
           letterSpacing={0.02}
@@ -466,9 +462,9 @@ function SceneContent({
 
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 8, 5]} intensity={1.2} />
-      <directionalLight position={[-5, -4, -4]} intensity={0.5} />
+      <ambientLight intensity={0.9} />
+      <directionalLight position={[5, 8, 5]} intensity={1.5} />
+      <directionalLight position={[-5, -4, -4]} intensity={0.8} />
 
       {/* Primary Orb Group */}
       <group ref={orbGroupRef}>
@@ -476,8 +472,8 @@ function SceneContent({
         <pointLight
           ref={pointLightRef}
           position={[0, 0, 0]}
-          color="#38bdf8"
-          intensity={2.5}
+          color="#FF4D00"
+          intensity={2.0}
           distance={14}
         />
 
@@ -486,9 +482,9 @@ function SceneContent({
           <mesh ref={coreMeshRef} geometry={coreGeo}>
             <meshStandardMaterial
               ref={coreMatRef}
-              color="#ffffff"
-              emissive="#38bdf8"
-              emissiveIntensity={2.5}
+              color="#FFFFFF"
+              emissive="#FF4D00"
+              emissiveIntensity={1.8}
               roughness={0.2}
               metalness={0.1}
             />
@@ -497,7 +493,7 @@ function SceneContent({
           {/* Core Wireframe Energy Cage */}
           <mesh ref={coreCageRef} geometry={coreCageGeo}>
             <meshBasicMaterial
-              color="#38bdf8"
+              color="#FF4D00"
               wireframe
               transparent
               opacity={0.35}
@@ -509,7 +505,7 @@ function SceneContent({
         <mesh ref={beamRef} geometry={beamGeo} position={[0, 0, 0]}>
           <meshBasicMaterial
             ref={beamMatRef}
-            color="#38bdf8"
+            color="#FF4D00"
             transparent
             opacity={0}
             side={THREE.DoubleSide}
@@ -526,7 +522,7 @@ function SceneContent({
         >
           <meshBasicMaterial
             ref={seamMatRef}
-            color="#38bdf8"
+            color="#FF4D00"
             transparent
             opacity={0.8}
           />
@@ -537,15 +533,15 @@ function SceneContent({
           <mesh geometry={topHemiGeo}>
             <meshPhysicalMaterial
               ref={topHemiMatRef}
-              color="#ffffff"
-              transmission={0.92}
-              roughness={0.08}
-              metalness={0.1}
+              color="#FAF9F6"
+              transmission={0.85}
+              roughness={0.1}
+              metalness={0.05}
               thickness={1.1}
               ior={1.48}
               transparent
-              opacity={0.78}
-              reflectivity={0.85}
+              opacity={0.65}
+              reflectivity={0.6}
               clearcoat={1.0}
             />
           </mesh>
@@ -555,9 +551,9 @@ function SceneContent({
             <meshBasicMaterial
               ref={topWireMatRef}
               wireframe
-              color="#38bdf8"
+              color="#C8C6BE"
               transparent
-              opacity={0.22}
+              opacity={0.3}
             />
           </mesh>
 
@@ -565,9 +561,9 @@ function SceneContent({
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <ringGeometry args={[1.52, 1.56, 64]} />
             <meshBasicMaterial
-              color="#38bdf8"
+              color="#C8C6BE"
               transparent
-              opacity={0.5}
+              opacity={0.4}
             />
           </mesh>
         </group>
@@ -577,15 +573,15 @@ function SceneContent({
           <mesh geometry={bottomHemiGeo}>
             <meshPhysicalMaterial
               ref={bottomHemiMatRef}
-              color="#ffffff"
-              transmission={0.92}
-              roughness={0.08}
-              metalness={0.1}
+              color="#FAF9F6"
+              transmission={0.85}
+              roughness={0.1}
+              metalness={0.05}
               thickness={1.1}
               ior={1.48}
               transparent
-              opacity={0.78}
-              reflectivity={0.85}
+              opacity={0.65}
+              reflectivity={0.6}
               clearcoat={1.0}
             />
           </mesh>
@@ -595,9 +591,9 @@ function SceneContent({
             <meshBasicMaterial
               ref={bottomWireMatRef}
               wireframe
-              color="#38bdf8"
+              color="#C8C6BE"
               transparent
-              opacity={0.22}
+              opacity={0.3}
             />
           </mesh>
 
@@ -605,9 +601,9 @@ function SceneContent({
           <mesh rotation={[Math.PI / 2, 0, 0]}>
             <ringGeometry args={[1.52, 1.56, 64]} />
             <meshBasicMaterial
-              color="#38bdf8"
+              color="#C8C6BE"
               transparent
-              opacity={0.5}
+              opacity={0.4}
             />
           </mesh>
         </group>
@@ -639,7 +635,7 @@ function SceneContent({
                   ref={(el) => {
                     ringTrackMatRefs.current[category.id] = el;
                   }}
-                  color={category.accent}
+                  color="#D8D6CE"
                   transparent
                   opacity={0}
                 />
@@ -673,16 +669,6 @@ function SceneContent({
           </group>
         );
       })}
-
-      {/* Subtle Postprocessing Bloom */}
-      <EffectComposer multisampling={0}>
-        <Bloom
-          intensity={0.42}
-          luminanceThreshold={0.52}
-          luminanceSmoothing={0.85}
-          mipmapBlur
-        />
-      </EffectComposer>
 
       {/* OrbitControls: Enabled when phase >= 0.88 for free drag inspection */}
       <OrbitControls
@@ -722,6 +708,9 @@ export default function SkillsOrbScene({
   onMounted,
   isInView = true,
 }: SkillsOrbSceneProps) {
+  const { activeCanvas } = usePerformance();
+  const [dpr, setDpr] = useState<number>(1.25);
+
   useEffect(() => {
     // Notify parent component that canvas is mounted to trigger ScrollTrigger.refresh()
     if (onMounted) {
@@ -732,6 +721,8 @@ export default function SkillsOrbScene({
     }
   }, [onMounted]);
 
+  const shouldRender = isInView && activeCanvas === "skills";
+
   return (
     <div
       className="w-full h-full relative"
@@ -739,8 +730,8 @@ export default function SkillsOrbScene({
     >
       <Canvas
         camera={{ position: [0, 0, 8.4], fov: 44 }}
-        dpr={[1, 1.5]}
-        frameloop={isInView ? "always" : "demand"}
+        dpr={dpr}
+        frameloop={shouldRender ? "always" : "never"}
         gl={{
           alpha: true,
           antialias: true,
@@ -748,6 +739,10 @@ export default function SkillsOrbScene({
         }}
         className="w-full h-full bg-transparent"
       >
+        <PerformanceMonitor
+          onDecline={() => setDpr(1)}
+          onIncline={() => setDpr(1.25)}
+        />
         <SceneContent
           progressRef={progressRef}
           selectedCategoryId={selectedCategoryId}

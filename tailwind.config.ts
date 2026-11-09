@@ -11,8 +11,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0a0a0a",
-        foreground: "#ededed",
+        bg: "#F5F3EE",
+        surface: "#FFFFFF",
+        border: "rgba(17, 17, 17, 0.10)",
+        text: "#111111",
+        muted: "#6B6B6B",
+        accent: "#FF4D00",
+        "accent-text": "#C43A00",
+        background: "#F5F3EE",
+        foreground: "#111111",
       },
       fontFamily: {
         anton: ["var(--font-anton)", "sans-serif"],

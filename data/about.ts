@@ -38,7 +38,7 @@ export const ABOUT_DATA: AboutData = {
   statement:
     "I turn complex ideas into scalable products. From backend architecture to pixel-perfect interfaces, I build and ship full-stack platforms end to end.",
   photo: {
-    src: "/me.png",
+    src: "/me.webp",
     alt: "Abhishek — Full-Stack Engineer and System Architect",
     badgeText: "AVAILABLE FOR WORK • AVAILABLE FOR WORK • ",
     caption: "ABHISHEK VERMA",

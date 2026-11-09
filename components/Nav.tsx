@@ -43,8 +43,20 @@ export default function Nav() {
     const xTo = gsap.quickTo(btn, "x", { duration: 0.35, ease: "power3.out" });
     const yTo = gsap.quickTo(btn, "y", { duration: 0.35, ease: "power3.out" });
 
+    let cachedRect: DOMRect | null = null;
+    const updateRect = () => {
+      if (btn) cachedRect = btn.getBoundingClientRect();
+    };
+
+    updateRect();
+    window.addEventListener("resize", updateRect);
+    window.addEventListener("scroll", updateRect, { passive: true });
+
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = btn.getBoundingClientRect();
+      // Fast bypass if mouse is not anywhere near the top navigation area
+      if (e.clientY > 120) return;
+
+      const rect = cachedRect || btn.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const dx = e.clientX - centerX;
@@ -65,10 +77,12 @@ export default function Nav() {
       yTo(0);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     btn.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
+      window.removeEventListener("resize", updateRect);
+      window.removeEventListener("scroll", updateRect);
       window.removeEventListener("mousemove", handleMouseMove);
       btn.removeEventListener("mouseleave", handleMouseLeave);
     };
@@ -93,8 +107,8 @@ export default function Nav() {
         >
           {/* Left: ABHISHEK */}
           <div className="flex items-center gap-2.5 group cursor-pointer" data-cursor="hover">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs md:text-sm uppercase tracking-[0.25em] font-medium text-white/90 group-hover:text-white transition-colors select-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-pulse" />
+            <span className="text-xs md:text-sm uppercase tracking-[0.25em] font-medium text-[#111111] group-hover:text-[#C43A00] transition-colors select-none">
               ABHISHEK
             </span>
           </div>
@@ -103,12 +117,12 @@ export default function Nav() {
           <button
             ref={menuButtonRef}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="group relative flex items-center gap-2 text-xs md:text-sm uppercase tracking-[0.25em] font-medium text-white/80 hover:text-white transition-colors focus:outline-none select-none cursor-pointer px-3 py-1.5"
+            className="group relative flex items-center gap-2 text-xs md:text-sm uppercase tracking-[0.25em] font-medium text-[#111111] hover:text-[#C43A00] transition-colors focus:outline-none select-none cursor-pointer px-3 py-1.5"
             aria-label="Toggle Navigation Menu"
             data-cursor="hover"
           >
             <span>{isMenuOpen ? "CLOSE" : "MENU"}</span>
-            <span className="inline-block w-4 h-[1px] bg-white/60 group-hover:bg-white group-hover:w-6 transition-all duration-300" />
+            <span className="inline-block w-4 h-[1px] bg-[#111111]/40 group-hover:bg-[#FF4D00] group-hover:w-6 transition-all duration-300" />
           </button>
         </motion.div>
       </header>
@@ -121,7 +135,7 @@ export default function Nav() {
             animate={{ opacity: 1, clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
             exit={{ opacity: 0, clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[80] bg-[#0a0a0a]/95 flex flex-col justify-between px-6 py-10 md:px-16 md:py-16 text-white select-none overflow-hidden"
+            className="fixed inset-0 z-[80] bg-[#F5F3EE]/98 flex flex-col justify-between px-6 py-10 md:px-16 md:py-16 text-[#111111] select-none overflow-hidden"
           >
             <div className="max-w-[1920px] mx-auto w-full pt-16 flex flex-col justify-between h-full">
               {/* Menu Navigation Links Panel */}
@@ -151,17 +165,17 @@ export default function Nav() {
                           delay: 0.08 + idx * 0.07,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        className={`group block font-anton uppercase text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight transition-all duration-300 ${opacityClass}`}
+                        className={`group block font-anton uppercase text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight transition-all duration-300 text-[#111111] hover:text-[#C43A00] ${opacityClass}`}
                         data-cursor="hover"
                       >
                         <div className="flex items-baseline gap-4 md:gap-8">
-                          <span className="text-xs sm:text-sm font-mono tracking-widest text-neutral-500">
+                          <span className="text-xs sm:text-sm font-mono tracking-widest text-[#6B6B6B]">
                             0{idx + 1}
                           </span>
                           <span className="transition-transform duration-300 group-hover:translate-x-3">
                             {item.label}
                           </span>
-                          <span className="hidden lg:inline-block text-xs font-mono tracking-[0.2em] text-neutral-500 ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="hidden lg:inline-block text-xs font-mono tracking-[0.2em] text-[#6B6B6B] ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             {"//"} {item.desc}
                           </span>
                         </div>
@@ -172,9 +186,9 @@ export default function Nav() {
               </div>
 
               {/* Bottom Footer Info */}
-              <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs font-mono uppercase tracking-[0.22em] text-neutral-400">
+              <div className="border-t border-[rgba(17,17,17,0.10)] pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs font-mono uppercase tracking-[0.22em] text-[#6B6B6B]">
                 <div className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
                   <span>{`${CONTACT_DATA.location.toUpperCase()} // REMOTE WORLDWIDE`}</span>
                 </div>
                 <span>{CONTACT_DATA.availability}</span>

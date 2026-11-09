@@ -23,8 +23,8 @@ function SmartChipGlyph() {
         width="29"
         height="21"
         rx="3.5"
-        fill="#181818"
-        stroke="#4a4a4a"
+        fill="#FFFFFF"
+        stroke="rgba(17,17,17,0.20)"
         strokeWidth="1"
       />
       <rect
@@ -33,14 +33,14 @@ function SmartChipGlyph() {
         width="15"
         height="12"
         rx="1.5"
-        stroke="#666666"
+        stroke="#6B6B6B"
         strokeWidth="0.8"
       />
-      <line x1="7.5" y1="11" x2="22.5" y2="11" stroke="#666666" strokeWidth="0.8" />
-      <line x1="15" y1="0.5" x2="15" y2="5" stroke="#666666" strokeWidth="0.8" />
-      <line x1="15" y1="17" x2="15" y2="21.5" stroke="#666666" strokeWidth="0.8" />
-      <line x1="0.5" y1="11" x2="7.5" y2="11" stroke="#666666" strokeWidth="0.8" />
-      <line x1="22.5" y1="11" x2="29.5" y2="11" stroke="#666666" strokeWidth="0.8" />
+      <line x1="7.5" y1="11" x2="22.5" y2="11" stroke="#6B6B6B" strokeWidth="0.8" />
+      <line x1="15" y1="0.5" x2="15" y2="5" stroke="#6B6B6B" strokeWidth="0.8" />
+      <line x1="15" y1="17" x2="15" y2="21.5" stroke="#6B6B6B" strokeWidth="0.8" />
+      <line x1="0.5" y1="11" x2="7.5" y2="11" stroke="#6B6B6B" strokeWidth="0.8" />
+      <line x1="22.5" y1="11" x2="29.5" y2="11" stroke="#6B6B6B" strokeWidth="0.8" />
     </svg>
   );
 }
@@ -63,26 +63,26 @@ function QrMatrixGlyph() {
         width="37"
         height="37"
         rx="4"
-        fill="#0b0b0b"
-        stroke="rgba(255,255,255,0.18)"
+        fill="#FFFFFF"
+        stroke="rgba(17,17,17,0.18)"
       />
       {/* Top-Left Finder */}
-      <rect x="4" y="4" width="10" height="10" fill="none" stroke="white" strokeWidth="1.5" />
-      <rect x="6.5" y="6.5" width="5" height="5" fill="white" />
+      <rect x="4" y="4" width="10" height="10" fill="none" stroke="#111111" strokeWidth="1.5" />
+      <rect x="6.5" y="6.5" width="5" height="5" fill="#111111" />
       {/* Top-Right Finder */}
-      <rect x="24" y="4" width="10" height="10" fill="none" stroke="white" strokeWidth="1.5" />
-      <rect x="26.5" y="6.5" width="5" height="5" fill="white" />
+      <rect x="24" y="4" width="10" height="10" fill="none" stroke="#111111" strokeWidth="1.5" />
+      <rect x="26.5" y="6.5" width="5" height="5" fill="#111111" />
       {/* Bottom-Left Finder */}
-      <rect x="4" y="24" width="10" height="10" fill="none" stroke="white" strokeWidth="1.5" />
-      <rect x="6.5" y="26.5" width="5" height="5" fill="white" />
+      <rect x="4" y="24" width="10" height="10" fill="none" stroke="#111111" strokeWidth="1.5" />
+      <rect x="6.5" y="26.5" width="5" height="5" fill="#111111" />
       {/* Data Modules */}
-      <rect x="17" y="5" width="3" height="3" fill="white" opacity="0.9" />
-      <rect x="17" y="11" width="3" height="3" fill="white" opacity="0.6" />
-      <rect x="17" y="17" width="3" height="3" fill="white" opacity="0.9" />
-      <rect x="24" y="17" width="3" height="3" fill="white" opacity="0.75" />
-      <rect x="30" y="22" width="3" height="3" fill="white" opacity="0.85" />
-      <rect x="17" y="29" width="3" height="3" fill="white" opacity="0.7" />
-      <rect x="23" y="29" width="3" height="3" fill="white" opacity="0.85" />
+      <rect x="17" y="5" width="3" height="3" fill="#111111" opacity="0.9" />
+      <rect x="17" y="11" width="3" height="3" fill="#111111" opacity="0.6" />
+      <rect x="17" y="17" width="3" height="3" fill="#111111" opacity="0.9" />
+      <rect x="24" y="17" width="3" height="3" fill="#111111" opacity="0.75" />
+      <rect x="30" y="22" width="3" height="3" fill="#111111" opacity="0.85" />
+      <rect x="17" y="29" width="3" height="3" fill="#111111" opacity="0.7" />
+      <rect x="23" y="29" width="3" height="3" fill="#111111" opacity="0.85" />
     </svg>
   );
 }
@@ -357,15 +357,15 @@ export default function Certifications() {
     <section
       ref={sectionRef}
       id="certifications"
-      className="relative w-full min-h-screen bg-[#0a0a0a] text-white py-20 lg:py-16 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-white/5 flex flex-col justify-between"
+      className="relative w-full min-h-screen bg-[#F5F3EE] text-[#111111] py-20 lg:py-16 px-6 sm:px-10 lg:px-16 overflow-hidden border-t border-[rgba(17,17,17,0.10)] flex flex-col justify-between"
     >
       {/* 1. Background Technical Faint Grid */}
       <div
-        className="pointer-events-none absolute inset-0 -z-20 opacity-[0.14]"
+        className="pointer-events-none absolute inset-0 -z-20 opacity-[0.04]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
+            linear-gradient(to right, rgba(17, 17, 17, 0.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(17, 17, 17, 0.15) 1px, transparent 1px)
           `,
           backgroundSize: "64px 64px",
         }}

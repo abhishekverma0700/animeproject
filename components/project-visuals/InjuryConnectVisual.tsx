@@ -228,7 +228,7 @@ export default function InjuryConnectVisual({
         <motion.div
           animate={{ y: [0, -7, 0] }}
           transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-4 left-4 w-48 p-2.5 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 shadow-xl"
+          className="absolute top-4 left-4 w-48 p-2.5 rounded-xl bg-black/85  border border-white/10 shadow-xl"
         >
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
@@ -257,7 +257,7 @@ export default function InjuryConnectVisual({
         <motion.div
           animate={{ y: [0, 7, 0] }}
           transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
-          className="absolute bottom-4 left-4 w-48 p-2.5 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 shadow-xl"
+          className="absolute bottom-4 left-4 w-48 p-2.5 rounded-xl bg-black/85  border border-white/10 shadow-xl"
         >
           <div className="flex items-center gap-2 mb-1.5">
             <div className="w-5 h-5 rounded bg-sky-500/20 border border-sky-500/40 flex items-center justify-center font-mono text-[9px] text-sky-400 font-bold">
@@ -286,7 +286,7 @@ export default function InjuryConnectVisual({
         <motion.div
           animate={{ y: [0, -6, 0] }}
           transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-          className="absolute top-4 right-4 w-36 p-2.5 rounded-xl bg-black/85 backdrop-blur-md border border-sky-500/30 shadow-xl"
+          className="absolute top-4 right-4 w-36 p-2.5 rounded-xl bg-black/85  border border-sky-500/30 shadow-xl"
         >
           <span className="font-mono text-[8px] uppercase tracking-wider text-neutral-400 block mb-0.5">
             Injury Index
@@ -314,7 +314,7 @@ export default function InjuryConnectVisual({
       />
 
       {/* Bottom-Right Badge inside the card with padding */}
-      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
+      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80  border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
         <span>CLICK TO INSPECT</span>
         <span className="text-sky-400 font-bold">↗</span>
       </div>

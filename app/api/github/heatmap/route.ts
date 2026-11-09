@@ -92,7 +92,7 @@ function generateFallbackCalendar(): { weeks: HeatmapWeek[]; days: HeatmapDay[] 
         date: dateStr,
         count: 0,
         level: "0",
-        color: "#181818",
+        color: "#E8E6DF",
       };
       weekDays.push(day);
       allDays.push(day);
@@ -140,14 +140,14 @@ function parsePublicContributionsHtml(html: string): {
         level,
         color:
           level === "4"
-            ? "#34d399"
+            ? "#FF4D00"
             : level === "3"
-            ? "#10b981"
+            ? "#FF6420"
             : level === "2"
-            ? "#059669"
+            ? "#FF8A50"
             : level === "1"
-            ? "#064e3b"
-            : "#181818",
+            ? "#FFC2A8"
+            : "#E8E6DF",
       });
     }
 

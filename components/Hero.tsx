@@ -65,10 +65,6 @@ function scrambleText(
   requestAnimationFrame(updateFrame);
 }
 
-/**
- * Hero States Data Array
- * Easily customize text, roles, and bottom statements for each slide state.
- */
 export interface HeroSlideData {
   id: string;
   index: string;
@@ -172,7 +168,7 @@ export default function Hero() {
         });
       });
 
-      // 2. Initial on-load entrance animation (paused until preloader curtain slides up)
+      // 2. Initial on-load entrance animation
       const introTl = gsap.timeline({
         paused: true,
         defaults: { ease: "power3.out" },
@@ -188,7 +184,7 @@ export default function Hero() {
         )
         .fromTo(
           photoImageRef.current,
-          { opacity: 0, scale: 1.12 },
+          { opacity: 0, scale: 1.08 },
           { opacity: 1, scale: 1, duration: 1.4 },
           0.1
         )
@@ -354,30 +350,29 @@ export default function Hero() {
       ScrollTrigger.refresh();
     }, containerRef);
 
-    // Subtle parallax and cursor spotlight on photo on mouse move
+    // Optimized parallax using quickTo (zero layout thrashing, no getBoundingClientRect)
+    const photoEl = photoWrapperRef.current;
+    let xTo: ((v: number) => void) | null = null;
+    let yTo: ((v: number) => void) | null = null;
+    let rotYTo: ((v: number) => void) | null = null;
+    let rotXTo: ((v: number) => void) | null = null;
+
+    if (photoEl) {
+      xTo = gsap.quickTo(photoEl, "x", { duration: 0.6, ease: "power2.out" });
+      yTo = gsap.quickTo(photoEl, "y", { duration: 0.6, ease: "power2.out" });
+      rotYTo = gsap.quickTo(photoEl, "rotateY", { duration: 0.6, ease: "power2.out" });
+      rotXTo = gsap.quickTo(photoEl, "rotateX", { duration: 0.6, ease: "power2.out" });
+    }
+
     const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 2;
-      const y = (e.clientY / innerHeight - 0.5) * 2;
+      if (!photoEl || !xTo || !yTo || !rotYTo || !rotXTo) return;
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
 
-      if (photoWrapperRef.current) {
-        gsap.to(photoWrapperRef.current, {
-          x: x * 15,
-          y: y * 12,
-          rotateY: x * 2,
-          rotateX: -y * 2,
-          duration: 0.9,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-
-        // Update spotlight position relative to photo wrapper
-        const rect = photoWrapperRef.current.getBoundingClientRect();
-        const spotX = e.clientX - rect.left;
-        const spotY = e.clientY - rect.top;
-        photoWrapperRef.current.style.setProperty("--spot-x", `${spotX}px`);
-        photoWrapperRef.current.style.setProperty("--spot-y", `${spotY}px`);
-      }
+      xTo(x * 12);
+      yTo(y * 10);
+      rotYTo(x * 2);
+      rotXTo(-y * 2);
     };
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
@@ -401,34 +396,34 @@ export default function Hero() {
       <section
         ref={containerRef}
         id="hero"
-        className="relative w-full h-screen min-h-[640px] max-h-[1440px] bg-[#0a0a0a] text-white overflow-hidden flex flex-col justify-between pt-24 pb-8 px-6 md:px-12 lg:px-16 select-none"
+        className="relative w-full h-screen min-h-[640px] max-h-[1440px] bg-[#F5F3EE] text-[#111111] overflow-hidden flex flex-col justify-between pt-24 pb-8 px-6 md:px-12 lg:px-16 select-none"
       >
         {/* 3D WebGL Layer (Behind photo, above background) */}
         <HeroScene progressRef={progressRef} />
 
-        {/* Subtle Background Accent Lines */}
-        <div className="absolute inset-0 pointer-events-none flex justify-between max-w-[1920px] mx-auto px-6 md:px-12 lg:px-16 opacity-10">
-          <div className="w-[1px] h-full bg-white/20" />
-          <div className="w-[1px] h-full bg-white/20 hidden md:block" />
-          <div className="w-[1px] h-full bg-white/20 hidden lg:block" />
-          <div className="w-[1px] h-full bg-white/20" />
+        {/* Subtle Background Accent Lines (4% Opacity) */}
+        <div className="absolute inset-0 pointer-events-none flex justify-between max-w-[1920px] mx-auto px-6 md:px-12 lg:px-16 opacity-40">
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.06)]" />
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.06)] hidden md:block" />
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.06)] hidden lg:block" />
+          <div className="w-[1px] h-full bg-[rgba(17,17,17,0.06)]" />
         </div>
 
         {/* Hero Info Strip */}
         <div
           ref={infoStripRef}
-          className="relative z-20 w-full max-w-[1920px] mx-auto flex flex-wrap items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-white/10 font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-neutral-400 select-none pointer-events-auto"
+          className="relative z-20 w-full max-w-[1920px] mx-auto flex flex-wrap items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-[rgba(17,17,17,0.10)] font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-[#6B6B6B] select-none pointer-events-auto"
         >
           <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-            <span className="text-white/90 font-medium tracking-[0.2em]">
+            <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse shrink-0" />
+            <span className="text-[#111111] font-medium tracking-[0.2em]">
               {CONTACT_DATA.heroLocation}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-neutral-400">
-            <span className="text-neutral-500 hidden sm:inline">{"COORDINATES //"}</span>
-            <span className="text-white/80">{CONTACT_DATA.coordinates}</span>
+          <div className="flex items-center gap-2 font-mono text-[#6B6B6B]">
+            <span className="text-[#6B6B6B]/80 hidden sm:inline">{"COORDINATES //"}</span>
+            <span className="text-[#111111]">{CONTACT_DATA.coordinates}</span>
           </div>
         </div>
 
@@ -439,7 +434,7 @@ export default function Hero() {
         >
           <div className="max-w-[70vw] lg:max-w-[55vw] xl:max-w-[50vw]">
             {/* Headline Line 1 & Line 2 */}
-            <h1 className="font-anton uppercase tracking-[-0.02em] text-[clamp(3.6rem,8.2vw,9.8rem)] leading-[0.88] text-white">
+            <h1 className="font-anton uppercase tracking-[-0.02em] text-[clamp(3.6rem,8.2vw,9.8rem)] leading-[0.88] text-[#111111]">
               {/* Line 1 (Overflow Mask) */}
               <div className="grid grid-cols-1 grid-rows-1 overflow-hidden py-1">
                 {HERO_SLIDES.map((slide, idx) => (
@@ -463,7 +458,7 @@ export default function Hero() {
                     ref={(el) => {
                       if (el) line2Refs.current[idx] = el;
                     }}
-                    className="col-start-1 row-start-1 block will-change-transform text-white/95"
+                    className="col-start-1 row-start-1 block will-change-transform text-[#111111]"
                   >
                     {slide.headline[1]}
                   </span>
@@ -472,7 +467,7 @@ export default function Hero() {
             </h1>
 
             {/* 3 Small Mono Role Lines Below Headline */}
-            <div className="mt-8 md:mt-10 lg:mt-12 flex flex-col gap-2 font-mono text-xs sm:text-sm tracking-[0.22em] uppercase text-neutral-400">
+            <div className="mt-8 md:mt-10 lg:mt-12 flex flex-col gap-2 font-mono text-xs sm:text-sm tracking-[0.22em] uppercase text-[#6B6B6B]">
               {[0, 1, 2].map((roleRowIdx) => (
                 <div
                   key={"role-row-" + roleRowIdx}
@@ -489,7 +484,7 @@ export default function Hero() {
                           roleRowRefs.current[stateIdx][roleRowIdx] = el;
                         }
                       }}
-                      className="col-start-1 row-start-1 block will-change-transform text-white/70 hover:text-white transition-colors"
+                      className="col-start-1 row-start-1 block will-change-transform text-[#6B6B6B] hover:text-[#C43A00] transition-colors"
                     >
                       {slide.roles[roleRowIdx]}
                     </span>
@@ -503,67 +498,61 @@ export default function Hero() {
           <div className="flex items-center gap-4 mt-8 md:mt-10 pointer-events-none">
             {/* Vertical progress line */}
             <div className="flex items-center gap-3">
-              <div className="w-[1px] h-10 md:h-12 bg-white/20 relative overflow-hidden">
+              <div className="w-[1.5px] h-10 md:h-12 bg-[rgba(17,17,17,0.12)] relative overflow-hidden">
                 <div
                   ref={progressBarRef}
-                  className="w-full h-full bg-white origin-top will-change-transform"
+                  className="w-full h-full bg-[#FF4D00] origin-top will-change-transform"
                   style={{ transform: "scaleY(0.1)" }}
                 />
               </div>
 
               {/* Counter 01 / 04 */}
-              <div className="font-mono text-xs tracking-[0.25em] text-neutral-400">
-                <span ref={counterRef} className="text-white font-semibold">
+              <div className="font-mono text-xs tracking-[0.25em] text-[#6B6B6B]">
+                <span ref={counterRef} className="text-[#111111] font-semibold">
                   01
                 </span>
-                <span className="text-neutral-600"> / 04</span>
+                <span className="text-[#6B6B6B]/60"> / 04</span>
               </div>
             </div>
 
             {/* "SCROLL" Hint that fades out after first scroll */}
             <div
               ref={scrollHintRef}
-              className="ml-6 flex items-center gap-2 font-mono text-[11px] tracking-[0.25em] uppercase text-neutral-400"
+              className="ml-6 flex items-center gap-2 font-mono text-[11px] tracking-[0.25em] uppercase text-[#6B6B6B]"
             >
               <span>SCROLL</span>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-pulse" />
             </div>
           </div>
         </div>
 
-        {/* Right Anchored Fixed Photo with Spotlight & CSS Mask */}
+        {/* Right Anchored Photo Card: --text color background (#111111) with radius 24px */}
         <div
           ref={photoWrapperRef}
-          style={{ perspective: 1000, isolation: "auto" }}
-          className="absolute right-0 bottom-0 z-10 w-[85vw] sm:w-[65vw] md:w-[48vw] lg:w-[42vw] xl:w-[38vw] max-w-[760px] h-[65vh] sm:h-[72vh] md:h-[84vh] lg:h-[90vh] pointer-events-none select-none bg-transparent"
+          style={{ perspective: 1000 }}
+          className="absolute right-0 bottom-0 z-10 w-[85vw] sm:w-[65vw] md:w-[48vw] lg:w-[42vw] xl:w-[38vw] max-w-[720px] h-[65vh] sm:h-[72vh] md:h-[82vh] lg:h-[86vh] pointer-events-none select-none pb-4 pr-4 sm:pr-8"
           data-cursor="photo"
         >
           <div
             ref={photoImageRef}
-            style={{ isolation: "auto" }}
-            className="relative w-full h-full will-change-transform bg-transparent"
+            className="relative w-full h-full rounded-[24px] overflow-hidden bg-[#111111] border border-[rgba(17,17,17,0.12)] shadow-[0_24px_50px_rgba(17,17,17,0.12)]"
           >
-            <div
-              className="relative w-full h-full hero-image-mask bg-transparent"
-              style={{ isolation: "auto" }}
-            >
+            <div className="relative w-full h-full hero-image-mask">
               <Image
-                src="/me.png"
+                src="/me.webp"
                 alt="Abhishek - Full-Stack Developer & Software Architect"
                 fill
                 priority
                 sizes="(max-width: 768px) 85vw, (max-width: 1200px) 48vw, 40vw"
-                className="object-cover object-top grayscale contrast-[1.1] mix-blend-lighten"
-                style={{ mixBlendMode: "lighten" }}
+                className="object-cover object-top grayscale contrast-[1.12]"
               />
 
-              {/* Cursor-Following Radial Spotlight over the photo */}
+              {/* Subtle Ambient Radial Highlight */}
               <div
-                className="absolute inset-0 pointer-events-none hero-image-mask"
+                className="absolute inset-0 pointer-events-none"
                 style={{
                   background:
-                    "radial-gradient(circle 380px at var(--spot-x, 60%) var(--spot-y, 50%), rgba(255, 255, 255, 0.12), transparent 75%)",
-                  mixBlendMode: "screen",
+                    "radial-gradient(circle 380px at 60% 50%, rgba(255, 255, 255, 0.08), transparent 75%)",
                 }}
               />
             </div>
@@ -579,7 +568,7 @@ export default function Hero() {
                 ref={(el) => {
                   if (el) bottomRefs.current[idx] = el;
                 }}
-                className="col-start-1 row-start-1 font-anton uppercase tracking-[-0.03em] text-[clamp(3.8rem,13.2vw,14.8rem)] leading-[0.8] text-white mix-blend-difference will-change-transform"
+                className="col-start-1 row-start-1 font-anton uppercase tracking-[-0.03em] text-[clamp(3.8rem,13.2vw,14.8rem)] leading-[0.8] text-stroke-editorial text-transparent will-change-transform"
               >
                 {slide.bottomText}
               </div>

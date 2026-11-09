@@ -3,6 +3,7 @@ import { Anton } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { PerformanceProvider } from "@/components/PerformanceContext";
 import Nav from "@/components/Nav";
 import CustomCursor from "@/components/CustomCursor";
 
@@ -26,13 +27,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={anton.variable}>
-      <body className="bg-[#0a0a0a] text-white antialiased selection:bg-[#38bdf8] selection:text-[#0a0a0a]">
-        <CustomCursor />
-        <div className="grain-overlay" aria-hidden="true" />
-        <SmoothScroll>
-          <Nav />
-          <main>{children}</main>
-        </SmoothScroll>
+      <body className="bg-[#F5F3EE] text-[#111111] antialiased selection:bg-[#FF4D00] selection:text-[#111111]">
+        <PerformanceProvider>
+          <CustomCursor />
+          <div className="grain-overlay" aria-hidden="true" />
+          <SmoothScroll>
+            <Nav />
+            <main>{children}</main>
+          </SmoothScroll>
+        </PerformanceProvider>
       </body>
     </html>
   );

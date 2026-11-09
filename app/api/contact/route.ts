@@ -93,13 +93,13 @@ export async function POST(req: NextRequest) {
           subject: `Portfolio Message from ${cleanName}`,
           text: `Name: ${cleanName}\nEmail: ${cleanEmail}\n\nMessage:\n${cleanMessage}`,
           html: `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #222; background-color: #0c0c0c; color: #f0f0f0; border-radius: 8px;">
-              <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 16px; border-bottom: 1px solid #333; padding-bottom: 12px; color: #ffffff;">New Portfolio Inquiry</h2>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid rgba(17,17,17,0.10); background-color: #F5F3EE; color: #111111; border-radius: 8px;">
+              <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 16px; border-bottom: 1px solid rgba(17,17,17,0.10); padding-bottom: 12px; color: #111111;">New Portfolio Inquiry</h2>
               <p style="margin: 8px 0;"><strong>Name:</strong> ${cleanName}</p>
-              <p style="margin: 8px 0;"><strong>Email:</strong> <a href="mailto:${cleanEmail}" style="color: #38bdf8;">${cleanEmail}</a></p>
+              <p style="margin: 8px 0;"><strong>Email:</strong> <a href="mailto:${cleanEmail}" style="color: #FF4D00;">${cleanEmail}</a></p>
               <p style="margin: 16px 0 8px 0;"><strong>Message:</strong></p>
-              <div style="background-color: #161616; padding: 16px; border-radius: 6px; border-left: 3px solid #38bdf8; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">${cleanMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
-              <p style="margin-top: 24px; font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.1em;">Transmitted from Editorial Portfolio Contact Form</p>
+              <div style="background-color: #FFFFFF; padding: 16px; border-radius: 6px; border-left: 3px solid #FF4D00; white-space: pre-wrap; font-size: 14px; line-height: 1.6; border: 1px solid rgba(17,17,17,0.08);">${cleanMessage.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+              <p style="margin-top: 24px; font-size: 11px; color: #6B6B6B; text-transform: uppercase; letter-spacing: 0.1em;">Transmitted from Editorial Portfolio Contact Form</p>
             </div>
           `,
         }),

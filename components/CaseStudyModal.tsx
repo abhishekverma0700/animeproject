@@ -97,13 +97,13 @@ export default function CaseStudyModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="fixed inset-0 z-[100] bg-[#0a0a0a]/95 backdrop-blur-2xl overflow-y-auto text-white"
+        className="fixed inset-0 z-[100] bg-[#F5F3EE]/98 overflow-y-auto text-[#111111]"
       >
         {/* Sticky Top Header */}
-        <header className="sticky top-0 left-0 right-0 z-20 px-6 py-6 md:px-12 md:py-8 flex items-center justify-between border-b border-white/10 bg-[#0a0a0a]/80 backdrop-blur-md">
+        <header className="sticky top-0 left-0 right-0 z-20 px-6 py-6 md:px-12 md:py-8 flex items-center justify-between border-b border-[rgba(17,17,17,0.10)] bg-[#F5F3EE]/95 backdrop-blur-md">
           <button
             onClick={onClose}
-            className="group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 hover:text-white transition-colors focus:outline-none cursor-pointer bg-transparent border-none"
+            className="group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B] hover:text-[#111111] transition-colors focus:outline-none cursor-pointer bg-transparent border-none"
             data-cursor="hover"
           >
             <span className="transition-transform duration-300 group-hover:-translate-x-1">
@@ -112,7 +112,7 @@ export default function CaseStudyModal({
             <span>BACK // CLOSE [ESC]</span>
           </button>
 
-          <div className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500 hidden sm:block">
+          <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B] hidden sm:block">
             CASE STUDY [{project.index} / 03]
           </div>
 
@@ -120,9 +120,8 @@ export default function CaseStudyModal({
             href={project.link || project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-white hover:text-white transition-colors"
+            className="group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#C43A00] hover:text-[#C43A00]/80 transition-colors"
             data-cursor="hover"
-            style={{ color: project.accent }}
           >
             <span>LIVE DEMO</span>
             <span className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -137,19 +136,18 @@ export default function CaseStudyModal({
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <span
-                className="w-2.5 h-2.5 rounded-full animate-pulse"
-                style={{ backgroundColor: project.accent }}
+                className="w-2.5 h-2.5 rounded-full animate-pulse bg-[#FF4D00]"
               />
-              <span className="font-mono text-xs uppercase tracking-[0.28em] text-neutral-400">
+              <span className="font-mono text-xs uppercase tracking-[0.28em] text-[#6B6B6B]">
                 {project.role || "Lead Architect"}
               </span>
             </div>
 
-            <h1 className="font-anton uppercase tracking-[-0.02em] text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.88] text-white my-2">
+            <h1 className="font-anton uppercase tracking-[-0.02em] text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.88] text-[#111111] my-2">
               {project.title}
             </h1>
 
-            <p className="text-neutral-300 font-sans text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mt-2">
+            <p className="text-[#6B6B6B] font-sans text-base sm:text-lg md:text-xl max-w-3xl leading-relaxed mt-2">
               {project.description || project.summary}
             </p>
           </div>
@@ -157,7 +155,7 @@ export default function CaseStudyModal({
           {/* Primary Featured Image Mockup */}
           <motion.div
             layoutId={`card-image-${project.index}`}
-            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-[#121212] shadow-2xl"
+            className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden border border-[rgba(17,17,17,0.10)] bg-white shadow-[0_16px_40px_rgba(17,17,17,0.06)]"
           >
             <Image
               src={project.image || project.thumbnail || "/placeholder.png"}
@@ -168,12 +166,12 @@ export default function CaseStudyModal({
               sizes="100vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a]/60 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/25 via-transparent to-transparent pointer-events-none" />
           </motion.div>
 
           {/* Outcome Numbers (Count-Up Animation) */}
           <section className="flex flex-col gap-6">
-            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
               {"//"} QUANTIFIABLE OUTCOMES
             </h3>
 
@@ -181,14 +179,13 @@ export default function CaseStudyModal({
               {(project.stats || []).map((stat) => (
                 <div
                   key={stat.label}
-                  className="glass p-6 md:p-8 rounded-2xl flex flex-col justify-between"
+                  className="bg-white border border-[rgba(17,17,17,0.10)] shadow-[0_8px_30px_rgba(17,17,17,0.06)] p-6 md:p-8 rounded-2xl flex flex-col justify-between"
                 >
-                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400 mb-4">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B6B6B] mb-4">
                     {stat.label}
                   </span>
                   <div
-                    className="font-anton text-4xl sm:text-5xl md:text-6xl tracking-tight"
-                    style={{ color: project.accent }}
+                    className="font-anton text-4xl sm:text-5xl md:text-6xl tracking-tight text-[#FF4D00]"
                   >
                     <CountUpNumber
                       value={stat.value}
@@ -203,7 +200,7 @@ export default function CaseStudyModal({
 
           {/* Key Features Grid */}
           <section className="flex flex-col gap-6">
-            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
               {"//"} ARCHITECTURAL HIGHLIGHTS
             </h3>
 
@@ -211,17 +208,16 @@ export default function CaseStudyModal({
               {(project.features || []).map((feature, i) => (
                 <div
                   key={i}
-                  className="glass p-6 md:p-8 rounded-2xl flex flex-col justify-between gap-6"
+                  className="bg-white border border-[rgba(17,17,17,0.10)] shadow-[0_8px_30px_rgba(17,17,17,0.06)] p-6 md:p-8 rounded-2xl flex flex-col justify-between gap-6"
                 >
-                  <span className="font-mono text-xs tracking-widest text-neutral-500">
+                  <span className="font-mono text-xs tracking-widest text-[#6B6B6B]">
                     0{i + 1}
                   </span>
-                  <p className="font-sans text-sm md:text-base leading-relaxed text-neutral-300">
+                  <p className="font-sans text-sm md:text-base leading-relaxed text-[#111111]">
                     {feature}
                   </p>
                   <div
-                    className="h-1 w-8 rounded-full"
-                    style={{ backgroundColor: project.accent }}
+                    className="h-1 w-8 rounded-full bg-[#FF4D00]"
                   />
                 </div>
               ))}
@@ -230,7 +226,7 @@ export default function CaseStudyModal({
 
           {/* Technology Stack */}
           <section className="flex flex-col gap-6">
-            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+            <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
               {"//"} CORE TECHNOLOGY STACK
             </h3>
 
@@ -238,12 +234,7 @@ export default function CaseStudyModal({
               {(project.tags || project.techTags || []).map((tag) => (
                 <span
                   key={tag}
-                  className="glass !rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider transition-colors"
-                  style={{
-                    backgroundColor: `${project.accent}14`,
-                    borderColor: `${project.accent}40`,
-                    color: project.accent,
-                  }}
+                  className="bg-white border border-[rgba(17,17,17,0.12)] shadow-sm !rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-[#111111]"
                 >
                   {tag}
                 </span>
@@ -254,7 +245,7 @@ export default function CaseStudyModal({
           {/* Secondary Image Gallery */}
           {project.gallery && project.gallery.length > 0 && (
             <section className="flex flex-col gap-6">
-              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
+              <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B]">
                 {"//"} SYSTEM TELEMETRY & WORKFLOW PREVIEWS
               </h3>
 
@@ -262,7 +253,7 @@ export default function CaseStudyModal({
                 {project.gallery.slice(1).map((imgSrc, i) => (
                   <div
                     key={i}
-                    className="relative aspect-[16/10] rounded-xl overflow-hidden border border-white/10 bg-[#121212]"
+                    className="relative aspect-[16/10] rounded-xl overflow-hidden border border-[rgba(17,17,17,0.10)] bg-white shadow-[0_8px_30px_rgba(17,17,17,0.06)]"
                   >
                     <Image
                       src={imgSrc}
@@ -279,10 +270,10 @@ export default function CaseStudyModal({
           )}
 
           {/* Next Project Footer Switcher */}
-          <footer className="pt-12 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-16">
+          <footer className="pt-12 border-t border-[rgba(17,17,17,0.10)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-16">
             <button
               onClick={onClose}
-              className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none"
+              className="font-mono text-xs uppercase tracking-[0.25em] text-[#6B6B6B] hover:text-[#111111] transition-colors cursor-pointer bg-transparent border-none"
             >
               ← RETURN TO PROJECTS INDEX
             </button>
@@ -293,10 +284,10 @@ export default function CaseStudyModal({
               data-cursor="hover"
             >
               <div className="flex flex-col items-end">
-                <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">
+                <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#6B6B6B]">
                   NEXT CASE STUDY
                 </span>
-                <span className="font-anton text-3xl sm:text-4xl text-white group-hover:text-white/80 transition-colors uppercase">
+                <span className="font-anton text-3xl sm:text-4xl text-[#111111] group-hover:text-[#C43A00] transition-colors uppercase">
                   {nextProject.title} →
                 </span>
               </div>

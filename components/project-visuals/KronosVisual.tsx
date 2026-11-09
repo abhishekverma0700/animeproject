@@ -186,7 +186,7 @@ export default function KronosVisual({
         </div>
 
         {/* Dynamic Equalizer Streaming Bars Container */}
-        <div className="w-full max-w-[390px] h-32 flex items-end justify-between gap-1.5 px-3 py-2 rounded-xl bg-black/60 border border-emerald-500/20 backdrop-blur-md">
+        <div className="w-full max-w-[390px] h-32 flex items-end justify-between gap-1.5 px-3 py-2 rounded-xl bg-black/60 border border-emerald-500/20 ">
           {barConfigs.map((bar, idx) => (
             <div key={idx} className="flex-1 h-full flex items-end">
               <motion.div
@@ -216,7 +216,7 @@ export default function KronosVisual({
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
-          className="self-start px-3 py-1.5 rounded-xl bg-black/85 backdrop-blur-md border border-emerald-500/30 flex items-center gap-2 shadow-lg"
+          className="self-start px-3 py-1.5 rounded-xl bg-black/85  border border-emerald-500/30 flex items-center gap-2 shadow-lg"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
           <span className="font-mono text-[10px] uppercase text-emerald-300 font-semibold tracking-wider">
@@ -255,7 +255,7 @@ export default function KronosVisual({
       />
 
       {/* Bottom-Right Badge inside the card with padding */}
-      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
+      <div className="absolute bottom-4 right-5 z-30 px-3 py-1.5 rounded-lg bg-black/80  border border-white/15 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-neutral-300 group-hover:text-white transition-all shadow-md pointer-events-none">
         <span>CLICK TO INSPECT</span>
         <span className="text-emerald-400 font-bold">↗</span>
       </div>

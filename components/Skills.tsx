@@ -5,6 +5,8 @@ import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SKILLS_DATA, SkillCategory, SkillItem } from "@/data/skills";
+import { usePerformance } from "./PerformanceContext";
+import { debouncedScrollTriggerRefresh } from "./SmoothScroll";
 
 // Dynamic import with SSR false for 3D Canvas
 const SkillsOrbScene = dynamic(() => import("./SkillsOrbScene"), {
@@ -12,8 +14,8 @@ const SkillsOrbScene = dynamic(() => import("./SkillsOrbScene"), {
   loading: () => (
     <div className="w-full h-full flex items-center justify-center">
       <div className="glass px-6 py-3 rounded-full flex items-center gap-3">
-        <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/80">
+        <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+        <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#111111]">
           INITIALIZING 3D ORB...
         </span>
       </div>
@@ -21,7 +23,6 @@ const SkillsOrbScene = dynamic(() => import("./SkillsOrbScene"), {
   ),
 });
 
-// Helper to test WebGL support safely
 function checkWebGLSupport(): boolean {
   if (typeof window === "undefined") return false;
   try {
@@ -37,32 +38,36 @@ function checkWebGLSupport(): boolean {
 }
 
 export default function Skills() {
+  const { isLiteMode, requestActiveCanvas, releaseActiveCanvas } = usePerformance();
   const sectionRef = useRef<HTMLElement>(null);
   const pinContainerRef = useRef<HTMLDivElement>(null);
   const marqueeTrackRef = useRef<HTMLDivElement>(null);
 
-  // GSAP ScrollTrigger drives progressRef (0 -> 1)
-  const progressRef = useRef(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // Direct DOM refs to avoid setState in scroll onUpdate
+  const percentTextRef = useRef<HTMLSpanElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const phaseLabelRef = useRef<HTMLSpanElement>(null);
+  const tipTextRef = useRef<HTMLParagraphElement>(null);
+  const dragPromptRef = useRef<HTMLDivElement>(null);
 
-  // State for interactivity
+  const progressRef = useRef(0);
+
+  // State for category filter and hover
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [hoveredSkill, setHoveredSkill] = useState<{
     skill: SkillItem;
     category: SkillCategory;
   } | null>(null);
 
-  // Fallback trigger: < 768px, no WebGL, or prefers-reduced-motion
   const [isFallback, setIsFallback] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [isInView, setIsInView] = useState(true);
+  const [isInView, setIsInView] = useState(false);
 
-  // Mobile tapped skill state (for fallback view)
+  // Mobile tapped skill state
   const [mobileTappedSkillId, setMobileTappedSkillId] = useState<string | null>(null);
 
-  // Canvas mounted callback to refresh ScrollTrigger
   const handleCanvasMounted = useCallback(() => {
-    ScrollTrigger.refresh();
+    debouncedScrollTriggerRefresh();
   }, []);
 
   const handleHoverSkill = useCallback((skill: SkillItem, category: SkillCategory) => {
@@ -73,7 +78,6 @@ export default function Skills() {
     setHoveredSkill(null);
   }, []);
 
-  // 1. Detect screen size, reduced motion, and WebGL support
   useEffect(() => {
     setIsMounted(true);
 
@@ -84,7 +88,7 @@ export default function Skills() {
       ).matches;
       const webGLAvailable = checkWebGLSupport();
 
-      setIsFallback(isMobile || reducedMotion || !webGLAvailable);
+      setIsFallback(isMobile || reducedMotion || !webGLAvailable || isLiteMode);
     };
 
     checkEligibility();
@@ -96,9 +100,8 @@ export default function Skills() {
       window.removeEventListener("resize", checkEligibility);
       mql.removeEventListener("change", checkEligibility);
     };
-  }, []);
+  }, [isLiteMode]);
 
-  // 2. Set up ScrollTrigger pinning and marquee animation
   useEffect(() => {
     if (!isMounted) return;
 
@@ -109,7 +112,6 @@ export default function Skills() {
     ).matches;
 
     const ctx = gsap.context(() => {
-      // Pinning only active when NOT in fallback mode (desktop, WebGL enabled)
       if (!isFallback && sectionRef.current && pinContainerRef.current) {
         ScrollTrigger.create({
           trigger: sectionRef.current,
@@ -118,16 +120,53 @@ export default function Skills() {
           start: "top top",
           end: "+=300%",
           onUpdate: (self) => {
-            progressRef.current = self.progress;
-            setScrollProgress(self.progress);
+            const p = self.progress;
+            progressRef.current = p;
+
+            // Update DOM directly without React re-renders on scroll
+            const pct = Math.round(p * 100);
+            if (percentTextRef.current) {
+              percentTextRef.current.textContent = `${pct}%`;
+            }
+            if (progressBarRef.current) {
+              progressBarRef.current.style.width = `${pct}%`;
+            }
+            if (phaseLabelRef.current) {
+              phaseLabelRef.current.textContent =
+                p < 0.3
+                  ? "PHASE 01 // DORMANT ORB"
+                  : p < 0.55
+                  ? "PHASE 02 // CORE IGNITION"
+                  : p < 0.9
+                  ? "PHASE 03 // ORBITAL EXPANSION"
+                  : "PHASE 04 // 3D INTERACTIVE ARSENAL";
+            }
+            if (tipTextRef.current) {
+              tipTextRef.current.textContent =
+                p < 0.5
+                  ? "Scroll to trigger core ignition and orbital expansion."
+                  : p < 0.9
+                  ? "Hover any orbiting skill label to inspect toolchain details."
+                  : "Hemispheres collapsed into nucleus. Click & drag to rotate 3D system.";
+            }
+            if (dragPromptRef.current) {
+              dragPromptRef.current.style.opacity = p >= 0.88 ? "1" : "0";
+              dragPromptRef.current.style.pointerEvents = p >= 0.88 ? "auto" : "none";
+            }
           },
           onToggle: (self) => {
-            setIsInView(self.isActive);
+            const active = self.isActive;
+            setIsInView(active);
+            if (active) {
+              requestActiveCanvas("skills");
+            } else {
+              releaseActiveCanvas("skills");
+            }
           },
         });
       }
 
-      // Marquee continuous infinite translation with scroll velocity reaction
+      // Marquee continuous infinite translation
       if (marqueeTrackRef.current && !prefersReducedMotion) {
         let xPos = 0;
         const baseSpeed = 0.85;
@@ -161,7 +200,7 @@ export default function Skills() {
           end: "bottom top",
           onUpdate: (self) => {
             const vel = Math.abs(self.getVelocity());
-            currentVelocityBonus = Math.min(vel * 0.004, 8);
+            currentVelocityBonus = Math.min(vel * 0.003, 6);
           },
         });
 
@@ -175,64 +214,42 @@ export default function Skills() {
 
     return () => {
       ctx.revert();
+      releaseActiveCanvas("skills");
     };
-  }, [isMounted, isFallback]);
-
-  // Phase computation for header status label
-  const currentPhaseLabel =
-    scrollProgress < 0.3
-      ? "PHASE 01 // DORMANT ORB"
-      : scrollProgress < 0.55
-      ? "PHASE 02 // CORE IGNITION"
-      : scrollProgress < 0.9
-      ? "PHASE 03 // ORBITAL EXPANSION"
-      : "PHASE 04 // 3D INTERACTIVE ARSENAL";
+  }, [isMounted, isFallback, requestActiveCanvas, releaseActiveCanvas]);
 
   return (
     <section
       ref={sectionRef}
       id="skills"
-      className="relative w-full bg-[#0a0a0a] text-white border-t border-white/5 overflow-hidden"
+      className="relative w-full bg-[#F5F3EE] text-[#111111] overflow-hidden"
     >
-      {/* Background Ambient Glow */}
-      <div
-        className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 w-[950px] h-[600px] bg-sky-500/[0.018] blur-[180px] rounded-full -z-10"
-        aria-hidden="true"
-      />
-
-      {/* =========================================================================
-          DESKTOP 3D MODE (PINNED VIEWPORT)
-          ========================================================================= */}
-      {!isFallback && (
+      {!isFallback ? (
         <div
           ref={pinContainerRef}
-          className="relative w-full h-screen flex flex-col justify-between overflow-hidden"
+          className="relative w-full h-screen min-h-[640px] max-h-[1440px] flex flex-col justify-between overflow-hidden"
         >
-          {/* Top Section Header */}
-          <div className="relative z-20 pt-8 sm:pt-10 px-6 md:px-12 lg:px-20 max-w-[1720px] mx-auto w-full pointer-events-none">
-            {/* Header Mono Label */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10 mb-4 sm:mb-6 pointer-events-auto">
+          {/* Header Bar */}
+          <div className="relative z-20 w-full max-w-[1920px] mx-auto pt-24 px-6 md:px-12 lg:px-16 pointer-events-none">
+            <div className="flex items-center justify-between border-b border-[rgba(17,17,17,0.10)] pb-4 mb-6">
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-                <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/90">
-                  {SKILLS_DATA.sectionLabel}
-                </span>
-                <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
-                  {SKILLS_DATA.sectionNumber}
+                <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+                <span
+                  ref={phaseLabelRef}
+                  className="font-mono text-xs uppercase tracking-[0.25em] text-[#111111] font-semibold"
+                >
+                  PHASE 01 // DORMANT ORB
                 </span>
               </div>
 
-              <div className="flex items-center gap-6">
-                <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-sky-400/90 font-semibold">
-                  {currentPhaseLabel}
-                </span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-400 hidden lg:inline-block">
+              <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B6B6B]">
+                <span>{"CAPABILITIES //"}</span>
+                <span className="text-[#111111] font-semibold">
                   PRODUCTION-TESTED ARCHITECTURES & TOOLCHAINS
                 </span>
               </div>
             </div>
 
-            {/* Headline and Progress Bar Row */}
             <div className="flex items-end justify-between gap-8 pointer-events-auto">
               <div>
                 <h2 className="font-anton uppercase text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-transparent select-none leading-[0.95] text-stroke-editorial">
@@ -240,18 +257,18 @@ export default function Skills() {
                 </h2>
               </div>
 
-              {/* Progress Bar Track */}
               <div className="hidden md:flex flex-col items-end gap-1.5 pb-1">
-                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#6B6B6B]">
                   <span>ORB EXPANSION</span>
-                  <span className="text-sky-400 font-bold">
-                    {Math.round(scrollProgress * 100)}%
+                  <span ref={percentTextRef} className="text-[#C43A00] font-bold">
+                    0%
                   </span>
                 </div>
-                <div className="w-48 h-[2px] bg-white/10 rounded-full overflow-hidden">
+                <div className="w-48 h-[2px] bg-[rgba(17,17,17,0.12)] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-sky-400 via-emerald-400 to-purple-400 transition-all duration-75"
-                    style={{ width: `${Math.round(scrollProgress * 100)}%` }}
+                    ref={progressBarRef}
+                    className="h-full bg-[#FF4D00] transition-all duration-75"
+                    style={{ width: "0%" }}
                   />
                 </div>
               </div>
@@ -263,322 +280,192 @@ export default function Skills() {
             className="absolute inset-0 z-10 w-full h-full"
             data-cursor="explore"
           >
-            <SkillsOrbScene
-              progressRef={progressRef}
-              selectedCategoryId={selectedCategoryId}
-              hoveredSkill={hoveredSkill}
-              onHoverSkill={handleHoverSkill}
-              onUnhoverSkill={handleUnhoverSkill}
-              onMounted={handleCanvasMounted}
-              isInView={isInView}
-            />
+            {isInView && (
+              <SkillsOrbScene
+                progressRef={progressRef}
+                selectedCategoryId={selectedCategoryId}
+                hoveredSkill={hoveredSkill}
+                onHoverSkill={handleHoverSkill}
+                onUnhoverSkill={handleUnhoverSkill}
+                onMounted={handleCanvasMounted}
+                isInView={isInView}
+              />
+            )}
           </div>
 
-          {/* Left Category Legend Overlay */}
-          <div className="absolute left-6 md:left-12 lg:left-20 top-1/2 -translate-y-1/2 z-20 pointer-events-auto">
-            <div className="glass !rounded-2xl p-4 sm:p-5 flex flex-col gap-2.5 max-w-[220px] shadow-2xl backdrop-blur-xl">
-              <div className="flex items-center justify-between pb-2 border-b border-white/10 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-400">
-                <span>ORBIT RINGS</span>
-                {selectedCategoryId && (
-                  <button
-                    onClick={() => setSelectedCategoryId(null)}
-                    className="text-sky-400 hover:text-white transition-colors"
-                  >
-                    RESET
-                  </button>
-                )}
-              </div>
-
-              {SKILLS_DATA.categories.map((cat) => {
-                const isSelected = selectedCategoryId === cat.id;
-
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => {
-                      setSelectedCategoryId((prev) =>
-                        prev === cat.id ? null : cat.id
-                      );
-                    }}
-                    className={`flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-left transition-all duration-200 cursor-pointer ${
-                      isSelected
-                        ? "bg-white/15 shadow-md"
-                        : "hover:bg-white/5 opacity-80 hover:opacity-100"
-                    }`}
-                    style={{
-                      borderLeft: isSelected
-                        ? `3px solid ${cat.accent}`
-                        : "3px solid transparent",
-                    }}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{
-                          backgroundColor: cat.accent,
-                          boxShadow: isSelected
-                            ? `0 0 10px ${cat.accent}`
-                            : undefined,
-                        }}
-                      />
-                      <span className="font-mono text-xs uppercase tracking-wider font-semibold text-white">
-                        {cat.title}
-                      </span>
-                    </div>
-
-                    <span className="font-mono text-[10px] text-neutral-400">
-                      {cat.skills.length}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Right Floating Hover Inspection Tooltip */}
-          <div className="absolute right-6 md:right-12 lg:right-20 top-1/2 -translate-y-1/2 z-20 pointer-events-none hidden sm:block">
-            {hoveredSkill ? (
-              <div className="glass !rounded-2xl p-6 max-w-sm shadow-2xl border border-white/15 animate-in fade-in zoom-in-95 duration-200">
-                <div className="flex items-center gap-2.5 mb-3 font-mono text-[11px] uppercase tracking-[0.2em]">
+          {/* Floating Category Filter Chips (Top Left below heading) */}
+          <div className="absolute top-44 sm:top-48 left-6 md:left-12 lg:left-16 z-20 pointer-events-auto flex flex-wrap gap-2 max-w-sm">
+            {SKILLS_DATA.categories.map((cat) => {
+              const isSelected = selectedCategoryId === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() =>
+                    setSelectedCategoryId(isSelected ? null : cat.id)
+                  }
+                  className={`px-3 py-1.5 rounded-full font-mono text-[10px] uppercase tracking-wider transition-all duration-200 border flex items-center gap-2 ${
+                    isSelected
+                      ? "bg-[#111111] text-white border-[#111111] shadow-md"
+                      : "bg-white hover:bg-neutral-50 text-[#6B6B6B] hover:text-[#111111] border-[rgba(17,17,17,0.12)]"
+                  }`}
+                  data-cursor="hover"
+                >
                   <span
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{
-                      backgroundColor: hoveredSkill.category.accent,
-                      boxShadow: `0 0 10px ${hoveredSkill.category.accent}`,
-                    }}
+                    className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]"
                   />
+                  <span>{cat.title}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Bottom Left: Live Detail Card */}
+          <div className="relative z-20 px-6 md:px-12 lg:px-16 pb-8 pointer-events-none">
+            {hoveredSkill ? (
+              <div className="glass !rounded-2xl p-5 max-w-sm border border-[rgba(17,17,17,0.12)] shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-150">
+                <div className="flex items-center gap-2 mb-2 font-mono text-[10px] uppercase tracking-widest text-[#C43A00]">
                   <span
-                    className="font-bold"
-                    style={{ color: hoveredSkill.category.accent }}
-                  >
-                    {hoveredSkill.category.title}
-                  </span>
-                  <span className="text-white/30">{"//"}</span>
-                  <span className="text-neutral-400">INSPECTION</span>
+                    className="w-2 h-2 rounded-full bg-[#FF4D00]"
+                  />
+                  <span>{hoveredSkill.category.title}</span>
+                  <span className="text-[rgba(17,17,17,0.25)]">{"//"}</span>
+                  <span className="text-[#6B6B6B]">INSPECTION</span>
                 </div>
-
-                <h3 className="font-anton uppercase text-3xl tracking-tight text-white mb-2">
+                <h4 className="font-anton text-2xl text-[#111111] tracking-wide uppercase">
                   {hoveredSkill.skill.name}
-                </h3>
-
-                <p className="font-mono text-xs text-neutral-300 leading-relaxed">
+                </h4>
+                <p className="mt-1 font-mono text-xs text-[#6B6B6B]">
                   {hoveredSkill.skill.note}
                 </p>
-
-                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-neutral-400">
-                  <span>STATUS</span>
-                  <span className="text-emerald-400 font-semibold">
+                <div className="mt-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-[#6B6B6B]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
+                  <span className="text-[#111111] font-semibold">
                     ACTIVE IN PRODUCTION
                   </span>
                 </div>
               </div>
             ) : (
-              <div className="glass !rounded-2xl p-5 max-w-xs opacity-60 transition-opacity">
-                <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400 mb-1">
+              <div className="glass !rounded-2xl p-5 max-w-xs border border-[rgba(17,17,17,0.10)]">
+                <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6B6B6B] mb-1">
                   INTERACTIVE 3D
                 </div>
-                <p className="font-mono text-xs text-neutral-300">
-                  {scrollProgress < 0.5
-                    ? "Scroll to trigger core ignition and orbital expansion."
-                    : scrollProgress < 0.9
-                    ? "Hover any orbiting skill label to inspect toolchain details."
-                    : "Hemispheres collapsed into nucleus. Click & drag to rotate 3D system."}
+                <p ref={tipTextRef} className="font-mono text-xs text-[#111111]">
+                  Scroll to trigger core ignition and orbital expansion.
                 </p>
               </div>
             )}
           </div>
 
           {/* Drag to Rotate Badge Prompt (Phase >= 0.88) */}
-          {scrollProgress >= 0.88 && (
-            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none animate-in fade-in duration-300">
-              <div className="glass px-5 py-2.5 !rounded-full flex items-center gap-3 border border-sky-400/40 shadow-2xl">
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping" />
-                <span className="font-mono text-xs uppercase tracking-[0.22em] text-white font-semibold">
-                  DRAG MOUSE TO ROTATE 3D ARSENAL
-                </span>
-              </div>
+          <div
+            ref={dragPromptRef}
+            style={{ opacity: 0, pointerEvents: "none" }}
+            className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-300"
+          >
+            <div className="glass px-5 py-2.5 !rounded-full flex items-center gap-3 border border-[rgba(17,17,17,0.12)] shadow-xl">
+              <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-ping" />
+              <span className="font-mono text-xs uppercase tracking-[0.22em] text-[#111111] font-semibold">
+                DRAG MOUSE TO ROTATE 3D ARSENAL
+              </span>
             </div>
-          )}
+          </div>
 
-          {/* Bottom Marquee Strip */}
-          <div className="relative z-20 w-full border-t border-white/10 py-5 sm:py-6 overflow-hidden bg-black/50 backdrop-blur-md select-none">
+          {/* Bottom Marquee Strip - Solid non-backdrop background for high scrolling FPS */}
+          <div className="relative z-20 w-full border-t border-[rgba(17,17,17,0.10)] py-5 sm:py-6 overflow-hidden bg-[#F5F3EE]/95 select-none">
             <div
               ref={marqueeTrackRef}
-              className="flex items-center gap-10 whitespace-nowrap will-change-transform"
+              className="flex items-center gap-10 whitespace-nowrap"
             >
               <div className="flex items-center gap-10 shrink-0">
                 {SKILLS_DATA.marqueeSkills.map((name, idx) => (
                   <span
                     key={`m1-${idx}`}
-                    className="font-anton uppercase text-3xl sm:text-4xl md:text-5xl tracking-tight text-transparent select-none text-stroke-marquee hover:text-white transition-all duration-300 cursor-default"
+                    className="font-anton text-3xl sm:text-4xl uppercase tracking-wider text-stroke-marquee select-none cursor-default"
                   >
                     {name}
-                    <span className="ml-10 text-white/20 select-none font-mono text-xl">
-                      /
-                    </span>
                   </span>
                 ))}
               </div>
-
-              <div
-                className="flex items-center gap-10 shrink-0"
-                aria-hidden="true"
-              >
+              <div className="flex items-center gap-10 shrink-0" aria-hidden="true">
                 {SKILLS_DATA.marqueeSkills.map((name, idx) => (
                   <span
                     key={`m2-${idx}`}
-                    className="font-anton uppercase text-3xl sm:text-4xl md:text-5xl tracking-tight text-transparent select-none text-stroke-marquee hover:text-white transition-all duration-300 cursor-default"
+                    className="font-anton text-3xl sm:text-4xl uppercase tracking-wider text-stroke-marquee select-none cursor-default"
                   >
                     {name}
-                    <span className="ml-10 text-white/20 select-none font-mono text-xl">
-                      /
-                    </span>
                   </span>
                 ))}
               </div>
             </div>
           </div>
         </div>
-      )}
-
-      {/* =========================================================================
-          FALLBACK VIEW: (width < 768, WebGL unavailable, or prefers-reduced-motion)
-          Simple glass chips grouped by category, without pinning or 3D canvas
-          ========================================================================= */}
-      {isFallback && (
-        <div className="py-20 px-6 sm:px-10">
-          <div className="max-w-[1720px] mx-auto w-full mb-16">
-            {/* Header Mono Label */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-white/10 mb-10">
-              <div className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-                <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/90">
-                  {SKILLS_DATA.sectionLabel}
-                </span>
-                <span className="font-mono text-xs uppercase tracking-[0.25em] text-neutral-500">
-                  {SKILLS_DATA.sectionNumber}
-                </span>
-              </div>
-
-              <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-neutral-400">
-                PRODUCTION-TESTED ARCHITECTURES & TOOLCHAINS
-              </div>
+      ) : (
+        /* Mobile / Fallback Clean Grid View */
+        <div className="py-20 px-6 sm:px-10 max-w-7xl mx-auto">
+          <div className="border-b border-[rgba(17,17,17,0.10)] pb-6 mb-12">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#111111] font-semibold">
+                TECHNICAL ARSENAL
+              </span>
             </div>
+            <h2 className="font-anton uppercase text-4xl sm:text-6xl text-[#111111] tracking-tight">
+              {SKILLS_DATA.headingLine1} {SKILLS_DATA.headingLine2}
+            </h2>
+          </div>
 
-            {/* Giant Outlined Heading */}
-            <div className="mb-14">
-              <h2 className="font-anton uppercase text-5xl sm:text-6xl tracking-tight text-transparent select-none leading-[0.95] text-stroke-editorial mb-1">
-                {SKILLS_DATA.headingLine1}
-              </h2>
-              <h2 className="font-anton uppercase text-5xl sm:text-6xl tracking-tight text-transparent select-none leading-[0.95] text-stroke-editorial">
-                {SKILLS_DATA.headingLine2}
-              </h2>
-            </div>
-
-            {/* Simple Glass Chips Grouped by Category */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-              {SKILLS_DATA.categories.map((category) => (
-                <div
-                  key={category.id}
-                  className="glass !rounded-2xl p-6 sm:p-8 flex flex-col justify-start relative overflow-hidden"
-                >
-                  {/* Category Header */}
-                  <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.25em] text-neutral-400 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {SKILLS_DATA.categories.map((category) => (
+              <div
+                key={category.id}
+                className="bg-white rounded-2xl p-6 sm:p-8 border border-[rgba(17,17,17,0.10)] shadow-sm flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
                     <span
-                      className="font-semibold"
-                      style={{ color: category.accent }}
-                    >
-                      {category.number} {"//"}
-                    </span>
-                    <span className="text-white font-bold">
+                      className="w-3 h-3 rounded-full bg-[#FF4D00]"
+                    />
+                    <h3 className="font-anton text-2xl uppercase tracking-wide text-[#111111]">
                       {category.title}
-                    </span>
+                    </h3>
                   </div>
 
-                  <div
-                    className="w-full h-[1px] mb-6"
-                    style={{ backgroundColor: `${category.accent}44` }}
-                  />
-
-                  {/* Skills Glass Chips */}
                   <div className="flex flex-wrap gap-2.5">
                     {category.skills.map((skill) => {
                       const isTapped = mobileTappedSkillId === skill.id;
-
                       return (
-                        <div key={skill.id} className="flex flex-col">
-                          <button
-                            onClick={() => {
-                              setMobileTappedSkillId((prev) =>
-                                prev === skill.id ? null : skill.id
-                              );
-                            }}
-                            className={`glass px-4 py-2 !rounded-full flex items-center gap-2.5 transition-all text-left ${
-                              isTapped
-                                ? "border-sky-400 bg-white/10"
-                                : "hover:border-white/30"
-                            }`}
-                          >
-                            <span
-                              className="w-2 h-2 rounded-full shrink-0"
-                              style={{ backgroundColor: category.accent }}
-                            />
-                            <span className="font-anton uppercase text-lg tracking-wide text-white">
-                              {skill.name}
-                            </span>
-                          </button>
-
-                          {/* Expanded Note for Tapped Chip */}
-                          {isTapped && (
-                            <div className="mt-2 pl-3 py-1 font-mono text-[11px] text-neutral-300 border-l-2 border-sky-400 animate-in fade-in duration-200">
-                              {skill.note}
-                            </div>
-                          )}
-                        </div>
+                        <button
+                          key={skill.id}
+                          onClick={() =>
+                            setMobileTappedSkillId(isTapped ? null : skill.id)
+                          }
+                          className="px-3.5 py-2 rounded-xl text-xs font-mono uppercase tracking-wider border transition-all duration-200 flex items-center gap-2 bg-white/70 border-[rgba(17,17,17,0.12)] text-[#111111] hover:border-[#FF4D00]"
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]"
+                          />
+                          <span>{skill.name}</span>
+                        </button>
                       );
                     })}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Marquee Strip in Fallback */}
-          <div className="w-full border-t border-b border-white/10 py-6 overflow-hidden bg-black/40 backdrop-blur-sm select-none">
-            <div
-              ref={marqueeTrackRef}
-              className="flex items-center gap-10 whitespace-nowrap will-change-transform"
-            >
-              <div className="flex items-center gap-10 shrink-0">
-                {SKILLS_DATA.marqueeSkills.map((name, idx) => (
-                  <span
-                    key={`fm1-${idx}`}
-                    className="font-anton uppercase text-3xl sm:text-4xl tracking-tight text-transparent select-none text-stroke-marquee"
-                  >
-                    {name}
-                    <span className="ml-10 text-white/20 select-none font-mono text-xl">
-                      /
-                    </span>
-                  </span>
-                ))}
+                {mobileTappedSkillId &&
+                  category.skills.some((s) => s.id === mobileTappedSkillId) && (
+                    <div className="mt-6 pt-4 border-t border-[rgba(17,17,17,0.10)] font-mono text-xs text-[#C43A00]">
+                      <span>{"ACTIVE PRODUCTION // "}</span>
+                      <span className="text-[#111111]">
+                        {
+                          category.skills.find(
+                            (s) => s.id === mobileTappedSkillId
+                          )?.name
+                        }
+                      </span>
+                    </div>
+                  )}
               </div>
-              <div
-                className="flex items-center gap-10 shrink-0"
-                aria-hidden="true"
-              >
-                {SKILLS_DATA.marqueeSkills.map((name, idx) => (
-                  <span
-                    key={`fm2-${idx}`}
-                    className="font-anton uppercase text-3xl sm:text-4xl tracking-tight text-transparent select-none text-stroke-marquee"
-                  >
-                    {name}
-                    <span className="ml-10 text-white/20 select-none font-mono text-xl">
-                      /
-                    </span>
-                  </span>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
